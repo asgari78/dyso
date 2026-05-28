@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* تعریف فونت با استفاده از فایل‌های محلی */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../../public/fonts/Vazir-Bold.woff2') format('woff2');
+  src: url('../../public/fonts/Vazir-Bold.woff') format('woff');
+  src: url('../../public/fonts/Vazir-Bold.ttf') format('ttf');
+  src: url('../../public/fonts/Vazir-Bold.eot') format('eot');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('../../public/fonts/Vazir.woff2') format('woff2');
+  src: url('../../public/fonts/Vazir.woff') format('woff');
+  src: url('../../public/fonts/Vazir.ttf') format('ttf');
+  src: url('../../public/fonts/Vazir.eot') format('eot');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    /* مستقیماً از نامی که در font-face تعریف کردیم استفاده می‌کنیم */
+    font-family: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+    @apply antialiased bg-[#faf9f8] text-gray-900;
+  }
+}

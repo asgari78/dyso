@@ -11,6 +11,11 @@ import {
   Sparkles,
 } from "lucide-react";
 
+/**
+ * =================================================================================
+ * SERVICE DEFINITIONS & THEMES
+ * =================================================================================
+ */
 
 type ServiceId =
   | "custom-notes"
@@ -34,7 +39,6 @@ type ServiceTheme = {
   arrowBg: string;
 };
 
-
 type ServiceItem = {
   id: ServiceId;
   title: string;
@@ -45,7 +49,6 @@ type ServiceItem = {
   badge?: string;
   theme: ServiceTheme;
 };
-
 
 const THEMES: Record<ServiceId, ServiceTheme> = {
   "custom-notes": {
@@ -120,15 +123,13 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
 };
 
-
 const SERVICES: ServiceItem[] = [
   {
     id: "custom-notes",
     title: "جزوه سفارشی",
     icon: NotebookPen,
     tooltipTitle: "طراحی جزوه سفارشی",
-    tooltipText:
-      "برای هر پایه آموزشی و درس مورد نظرت جزوه مخصوص خودت را داشته باش",
+    tooltipText: "برای هر پایه آموزشی و درس مورد نظرت جزوه مخصوص خودت را داشته باش",
     tooltipImage: "/assets/categoryToltips/custom-notes.png",
     badge: "Personal Notes",
     theme: THEMES["custom-notes"],
@@ -138,8 +139,7 @@ const SERVICES: ServiceItem[] = [
     title: "فلش‌کارت سفارشی",
     icon: Layers,
     tooltipTitle: "طراحی فلش کارت سفارشی",
-    tooltipText:
-      "میتونی برای هر موضوع درسی یا کنکوری، فلش کارت های متنوع ای داشته باشی مثلا با میم های خنده دار یا عکس های مرتبط",
+    tooltipText: "میتونی برای هر موضوع درسی یا کنکوری، فلش کارت های متنوع ای داشته باشی",
     tooltipImage: "/assets/categoryToltips/custom-flashcards.jpg",
     badge: "Fun & Smart",
     theme: THEMES["custom-flashcards"],
@@ -149,8 +149,7 @@ const SERVICES: ServiceItem[] = [
     title: "کتاب داستان",
     icon: BookHeart,
     tooltipTitle: "طراحی کتاب داستان سفارشی",
-    tooltipText:
-      "میتونی با گفتن علاقه مندی ها، نام و عکس های فرزند عزیزت کتاب داستان مخصوص خودش را با کارکتر های انیمیشنی مورد علاقش یا شخصیت های سینمایی مورد علاقش را داشته باشی",
+    tooltipText: "کتاب داستان مخصوص با کارکتر های انیمیشنی مورد علاقه فرزندتان",
     tooltipImage: "/assets/categoryToltips/custom-storybook.jpg",
     badge: "Kids Story",
     theme: THEMES["custom-storybook"],
@@ -160,8 +159,7 @@ const SERVICES: ServiceItem[] = [
     title: "برچسب اسم",
     icon: Tag,
     tooltipTitle: "طراحی برچسب اسم اختصاصی",
-    tooltipText:
-      "با انتخاب طرح مورد علاقه ات اطلاعات و عکس خودت را روی برچسب اسم در هر سایزی طراحی کن. تا هر شخصی با دیدن لوازم التحریر و کتاب و دفتر هایت صاحبش را بشناسد",
+    tooltipText: "با انتخاب طرح مورد علاقه ات اطلاعات و عکس خودت را روی برچسب اسم طراحی کن",
     tooltipImage: "/assets/categoryToltips/custom-nametag.jpg",
     badge: "Name Label",
     theme: THEMES["custom-nametag"],
@@ -178,10 +176,44 @@ const SERVICES: ServiceItem[] = [
   },
 ];
 
+/**
+ * =================================================================================
+ * HELPERS
+ * =================================================================================
+ */
+
+/**
+ * Conditionally join CSS classes for cleaner code.
+ */
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Splits a title into two lines, essential for compact Persian text layout.
+ * Ensures strict wrapping behavior for RTL consistency.
+ */
+function splitTitleForCompact(title: string): React.ReactNode {
+  const words = title.split(" ");
+  if (words.length <= 1) return title;
+  
+  return (
+    <span className="flex flex-col items-start leading-[1.15]">
+      <span>{words[0]}</span>
+      <span className="whitespace-nowrap">{words.slice(1).join(" ")}</span>
+    </span>
+  );
+}
+
+/**
+ * =================================================================================
+ * SUB-COMPONENTS
+ * =================================================================================
+ */
+
+/**
+ * Decorative shine effect for button interaction.
+ */
 function ShineLayer() {
   return (
     <span
@@ -207,6 +239,10 @@ function ShineLayer() {
   );
 }
 
+/**
+ * The floating tooltip component.
+ * Positioned relative to the parent button, handling RTL alignment.
+ */
 type TooltipPanelProps = {
   item: ServiceItem;
   open: boolean;
@@ -222,78 +258,67 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
       role="tooltip"
       aria-hidden={!open}
       className={cn(
-        `absolute top-full border ${item.theme.tooltipBorder} rounded-2xl left-1/2 -translate-x-1/2`,
-        "hidden lg:flex",
-        // smaller tooltip
-        "mt-2 w-[290px]",
-        "z-50",
-        "origin-top",
-        "transition-all duration-200",
+        "absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 z-[100]",
+        "border rounded-2xl w-[280px]",
+        t.tooltipBorder,
+        "bg-white/90 backdrop-blur-md shadow-2xl",
+        "transition-all duration-300 ease-out",
         open
-          ? "pointer-events-auto opacity-100 translate-y-0 scale-100"
-          : "pointer-events-none opacity-0 -translate-y-1 scale-[0.985]"
+          ? "visible opacity-100 translate-y-0 scale-100"
+          : "invisible opacity-0 -translate-y-2 scale-[0.95]"
       )}
     >
-      {/* arrow (smaller) */}
-      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2">
+      {/* Arrow */}
+      <div className="absolute -top-2 left-1/2 -translate-x-1/2">
         <div
           className={cn(
-            "h-6 w-6 rotate-45 rounded-[3px]",
-            `border ${item.theme.tooltipBorder}`,
-            `${item.theme.arrowBg} backdrop-blur-md`
+            "h-4 w-4 rotate-45 border-t border-l rounded-[2px]",
+            t.tooltipBorder,
+            "bg-white"
           )}
         />
       </div>
 
-      <div
-        className={cn(
-          "relative overflow-hidden rounded-2xl",
-          "bg-white/0 backdrop-blur-xl",
-          // smaller padding
-          "p-3",
-          t.tooltipBorder,
-        )}
-      >
+      <div className="relative overflow-hidden rounded-2xl p-3">
+        {/* Background Gradient */}
         <div
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute inset-0 opacity-80",
+            "pointer-events-none absolute inset-0 opacity-40",
             "bg-gradient-to-br",
             t.tooltipGradient
           )}
         />
 
         <div className="relative flex items-start gap-3">
+          {/* Content */}
           <div className="min-w-0 flex-1">
-            {/* Keep the nice badge, remove "فقط توضیح" line and other CTAs */}
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
                 "border border-white/60 bg-white/70 backdrop-blur",
                 t.pillBg,
                 t.pillText
               )}
             >
-              <Sparkles className="h-3.5 w-3.5" />
+              <Sparkles className="h-3 w-3" />
               {item.badge ?? "Premium"}
             </span>
 
-            <h4 className={cn("mt-1 text-[12.5px] font-extrabold tracking-tight text-slate-900")}>
+            <h4 className="mt-1.5 text-[13px] font-extrabold tracking-tight text-slate-900">
               {item.tooltipTitle}
             </h4>
 
-<p className={cn("mt-1 text-[10px] leading-4 text-slate-700")}>
-  {item.tooltipText.split(" ").length > 12
-    ? `${item.tooltipText.split(" ").slice(0, 12).join(" ")}...`
-    : item.tooltipText}
-</p>
+            <p className="mt-1 text-[11px] leading-5 text-slate-600">
+              {item.tooltipText}
+            </p>
           </div>
 
-          {/* smaller image */}
-          <div className="relative w-[92px] shrink-0">
+          {/* Image */}
+          <div className="relative w-[70px] h-[70px] shrink-0">
             <div
               className={cn(
-                "relative h-[86px] overflow-hidden rounded-xl",
+                "relative h-full w-full overflow-hidden rounded-xl",
                 "ring-1 ring-white/60 bg-white/50",
                 t.imageGlow
               )}
@@ -303,12 +328,7 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
                 alt={item.tooltipTitle}
                 fill
                 className="object-cover"
-                sizes="92px"
-                priority={false}
-              />
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-white/10 via-transparent to-white/25"
+                sizes="70px"
               />
             </div>
           </div>
@@ -318,22 +338,19 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
   );
 }
 
+/**
+ * =================================================================================
+ * MAIN COMPONENT
+ * =================================================================================
+ */
+
 type DesktopServicesProps = {
   onSelect?: (serviceId: ServiceId) => void;
-  debug?: boolean;
 };
 
-export default function DesktopServices({ onSelect, debug = false }: DesktopServicesProps) {
+export default function DesktopServices({ onSelect }: DesktopServicesProps) {
   const [hoveredId, setHoveredId] = React.useState<ServiceId | null>(null);
   const closeTimer = React.useRef<number | null>(null);
-
-  const handleSelect = React.useCallback(
-    (serviceId: ServiceId) => {
-      if (debug) console.log("selected service:", serviceId);
-      onSelect?.(serviceId);
-    },
-    [onSelect, debug]
-  );
 
   const handleEnter = React.useCallback((id: ServiceId) => {
     if (closeTimer.current) {
@@ -344,16 +361,17 @@ export default function DesktopServices({ onSelect, debug = false }: DesktopServ
   }, []);
 
   const handleLeave = React.useCallback(() => {
-    closeTimer.current = window.setTimeout(() => setHoveredId(null), 90);
+    closeTimer.current = window.setTimeout(() => setHoveredId(null), 150);
   }, []);
 
   return (
     <nav
+      dir="rtl"
       className={cn(
-        "relative flex items-center",
-        // a bit tighter spacing
-        "gap-0  xl:gap-1",
-        "select-none"
+        "relative flex items-center justify-start select-none",
+        "w-full h-full", // Ensure parent container takes available space
+        "gap-1 md:gap-2",
+        "lg:px-4"
       )}
       aria-label="سرویس‌های اختصاصی"
       onMouseLeave={handleLeave}
@@ -362,69 +380,60 @@ export default function DesktopServices({ onSelect, debug = false }: DesktopServ
         const Icon = service.icon;
         const t = service.theme;
         const open = hoveredId === service.id;
-        const tooltipId = `desktop-service-tooltip-${service.id}`;
+        const tooltipId = `service-tooltip-${service.id}`;
 
         return (
-          <div key={service.id} className="relative" onMouseEnter={() => handleEnter(service.id)}>
+          <div
+            key={service.id}
+            className="relative"
+            onMouseEnter={() => handleEnter(service.id)}
+          >
             <button
               type="button"
-              onClick={() => handleSelect(service.id)}
+              onClick={() => onSelect?.(service.id)}
               aria-describedby={open ? tooltipId : undefined}
               className={cn(
-                "group relative",
-                // icon beside title (row)
-                "flex items-center justify-center gap-2",
-                // compact
-                "h-9 lg:h-10",
-                "px-0.5 md:px-1 lg:px-3",
-                "rounded-xl",
-                "transition-colors duration-200",
-                "cursor-pointer",
-                "bg-transparent",
-                "hover:bg-white/55 hover:backdrop-blur",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300/70",
+                "group relative flex items-center gap-2",
+                "h-12 px-3 rounded-xl transition-all duration-300",
+                "cursor-pointer bg-transparent hover:bg-slate-50",
+                "border border-transparent hover:border-slate-100",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20"
               )}
             >
               <ShineLayer />
 
-              {/* Icon chip (smaller) */}
+              {/* Icon */}
               <div
                 className={cn(
-                  "relative",
-                  "flex h-5 w-5 lg:h-8 lg:w-8 items-center justify-center",
-                  "rounded-lg",
-                  "transition-transform duration-200",
-                  // keep ring for icon chip, not the whole button
+                  "relative flex items-center justify-center shrink-0",
+                  "h-9 w-9 rounded-lg transition-all duration-300",
                   "ring-1",
                   t.iconBg,
                   t.iconRing,
-                  open ? "scale-[1.03]" : "scale-100"
+                  open ? "scale-105 shadow-sm" : "scale-100"
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute inset-0 -z-10 rounded-lg blur-xl opacity-0 transition-opacity duration-200",
+                    "absolute inset-0 -z-10 rounded-lg blur-lg opacity-0 transition-opacity duration-300",
                     open ? "opacity-100" : "opacity-0",
                     t.glow
                   )}
                 />
-                <Icon className={cn("h-4 w-4 lg:h-[15px] lg:w-[15px]", t.iconText)} />
+                <Icon className={cn("h-4 w-4", t.iconText)} />
               </div>
 
-              {/* Title */}
-              <span
+              {/* Text */}
+              <div
                 className={cn(
-                  "text-[10px] lg:text-[12px]",
-                  "font-extrabold tracking-tight whitespace-nowrap",
-                  "transition-colors duration-200",
-                  open ? t.accentText : "text-slate-700"
+                  "hidden lg:flex items-center text-right whitespace-nowrap transition-colors duration-300",
+                  "text-[13px] font-bold tracking-tight",
+                  open ? t.accentText : "text-slate-700 group-hover:text-slate-900"
                 )}
               >
                 {service.title}
-              </span>
-
-              {/* active indicator dot removed (not requested, also adds visual noise/overflow risk) */}
+              </div>
             </button>
 
             <TooltipPanel item={service} open={open} id={tooltipId} />

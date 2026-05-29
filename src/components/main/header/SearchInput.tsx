@@ -57,13 +57,11 @@ export default function SearchInput() {
   const [query, setQuery] = useState("");
   const [recents, setRecentsState] = useState<string[]>([]);
 
-  // وقتی مودال باز می‌شود، recents را از localStorage بخوان
   useEffect(() => {
     if (!isOpen) return;
     setRecentsState(getRecents());
   }, [isOpen]);
 
-  // بستن با ESC
   useEffect(() => {
     if (!isOpen) return;
 
@@ -98,7 +96,6 @@ export default function SearchInput() {
               className="mx-auto mt-16 w-full max-w-2xl px-4"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Search box */}
               <div className="bg-white rounded-2xl p-2 flex items-center gap-2 shadow-2xl mb-3 border border-blue-100">
                 <Search className="mr-3 text-gray-400" size={20} />
                 <input
@@ -119,10 +116,8 @@ export default function SearchInput() {
                 </button>
               </div>
 
-              {/* Panel */}
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
                 <div className="p-4 space-y-6">
-                  {/* Recents */}
                   {recents.length > 0 && (
                     <div>
                       <div className="flex justify-between items-center mb-3">
@@ -171,7 +166,6 @@ export default function SearchInput() {
                     </div>
                   )}
 
-                  {/* Trending */}
                   <div>
                     <h3 className="text-xs font-bold text-gray-400 mb-3 flex items-center gap-1">
                       <TrendingUp size={12} /> پرجستجوها
@@ -190,7 +184,6 @@ export default function SearchInput() {
                     </div>
                   </div>
 
-                  {/* Hint */}
                   <div className="text-[11px] text-gray-400">
                     برای جستجو حداقل ۲ کاراکتر وارد کنید و Enter بزنید.
                   </div>
@@ -204,27 +197,24 @@ export default function SearchInput() {
 
   return (
     <>
-      {/* Desktop trigger */}
-      <div className="hidden xl:block w-full max-w-md">
+      {/* 
+         ساختار هوشمند برای دسکتاپ و موبایل:
+         - در دسکتاپ (xl) عرض آن حداکثر 448 پیکسل است.
+         - در موبایل و تبلت به صورت منعطف (flex-1) کل فضای باقی‌مانده را پر می‌کند.
+         - برای جلوگیری از فشرده شدن بیش از حد در موبایل، min-width داده شده است.
+      */}
+      <div className="flex-1 xl:flex-none xl:w-full xl:max-w-md min-w-[160px] md:min-w-[240px]">
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="flex items-center w-full py-2.5 px-4 bg-gray-100 rounded-full text-sm text-gray-400 cursor-text hover:bg-gray-200 transition-colors"
+          className="flex items-center w-full py-2 md:py-2.5 px-3 md:px-4 bg-gray-100 rounded-xl md:rounded-full text-xs md:text-sm text-gray-400 cursor-text hover:bg-gray-200 transition-all border border-transparent hover:border-gray-300"
         >
-          <Search className="mr-auto h-4 w-4 text-gray-400" />
-          <span className="flex-1 text-right mr-2">جستجو در محصولات...</span>
+          <Search className="h-4 w-4 text-gray-400 shrink-0" />
+          <span className="flex-1 text-right mr-2 truncate">
+            جستجو در محصولات...
+          </span>
         </button>
       </div>
-
-      {/* Mobile trigger */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="xl:hidden p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-        aria-label="جستجو"
-      >
-        <Search className="h-5 w-5 text-gray-600" />
-      </button>
 
       {portal}
     </>

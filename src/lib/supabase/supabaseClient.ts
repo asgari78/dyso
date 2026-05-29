@@ -1,8 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 
-console.log(process.env);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn("هشدار: متغیرهای محیطی Supabase یافت نشدند. این موضوع ممکن است باعث بروز خطا در سمت کلاینت شود.");
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

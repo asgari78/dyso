@@ -11,8 +11,6 @@ export default function HomePage() {
           <h2 className="text-gray-400 font-medium">محتوای صفحه اصلی در مراحل بعدی اضافه می‌شود</h2>
         </div>
       </main>
-
-      {/* <MobileBottomNav /> */}
     </div>
   );
 }

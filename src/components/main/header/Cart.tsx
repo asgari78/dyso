@@ -153,7 +153,7 @@ export default function Cart() {
         <ShoppingBag className="h-6 w-6" />
 
         {totalItems > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white ring-2 ring-white xl:h-5 xl:min-w-5 xl:px-0 xl:text-[10px]">
+          <span className="absolute -right-0 -top-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white ring-2 ring-white xl:h-5 xl:min-w-5 xl:px-0 xl:text-[10px]">
             {totalItems}
           </span>
         )}

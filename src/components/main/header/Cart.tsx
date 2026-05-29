@@ -22,7 +22,7 @@ interface CartItem {
   name: string;
   price: number;
   discount: number;
-  image: string;
+  image?: string;
   variant: string; // ویژگی محصول
   quantity: number;
   deliveryMethod: string;

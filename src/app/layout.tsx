@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import AppProvider from "../providers/app-provider";
 
 export const metadata: Metadata = {
-  title: "Delana",
-  description: "فروشگاه آنلاین دلانا",
+  title: "Dyso",
+  description: "سفارش اختصاصی ات را طراحی کن",
 };
 
 export default function RootLayout({

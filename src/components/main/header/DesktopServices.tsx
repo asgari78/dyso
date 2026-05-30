@@ -113,7 +113,7 @@ const SERVICES: ServiceItem[] = [
     title: "جزوه سفارشی",
     icon: NotebookPen,
     tooltipTitle: "طراحی جزوه سفارشی",
-    tooltipText: "برای هر پایه آموزشی و درس مورد نظرت جزوه مخصوص خودت را داشته باش",
+    tooltipText: "برای هر پایه و درس مورد نظرت جزوه مخصوص خودت را داشته باش",
     tooltipImage: "/assets/categoryToltips/custom-notes.png",
     badge: "Personal Notes",
     theme: THEMES["custom-notes"],
@@ -123,7 +123,7 @@ const SERVICES: ServiceItem[] = [
     title: "فلش‌کارت سفارشی",
     icon: Layers,
     tooltipTitle: "طراحی فلش کارت سفارشی",
-    tooltipText: "میتونی برای هر موضوع درسی یا کنکوری، فلش کارت های متنوع ای داشته باشی",
+    tooltipText: "برای هر موضوع درسی، فلش کارت های متنوع داشته باش",
     tooltipImage: "/assets/categoryToltips/custom-flashcards.jpg",
     badge: "Fun & Smart",
     theme: THEMES["custom-flashcards"],
@@ -143,7 +143,7 @@ const SERVICES: ServiceItem[] = [
     title: "برچسب اسم",
     icon: Tag,
     tooltipTitle: "طراحی برچسب اسم اختصاصی",
-    tooltipText: "با انتخاب طرح مورد علاقه ات اطلاعات و عکس خودت را روی برچسب اسم طراحی کن",
+    tooltipText: "برچسب اسم دلخواهت را با اطلاعات و عکس خودت طراحی کن",
     tooltipImage: "/assets/categoryToltips/custom-nametag.jpg",
     badge: "Name Label",
     theme: THEMES["custom-nametag"],
@@ -153,7 +153,7 @@ const SERVICES: ServiceItem[] = [
     title: "برنامه هفتگی",
     icon: CalendarDays,
     tooltipTitle: "طراحی برنامه هفتگی اختصاصی",
-    tooltipText: "با انتخاب طرح مورد علاقه ات عکس و اسمت را روی برنامه هفتگی ات چاپ کن",
+    tooltipText: "برنامه هفتگی دلخواهت را با اطلاعات و عکس خودت طراحی کن",
     tooltipImage: "/assets/categoryToltips/custom-weekly-plan.jpg",
     badge: "Weekly Plan",
     theme: THEMES["custom-weekly-plan"],
@@ -178,24 +178,37 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
       id={id}
       role="tooltip"
       aria-hidden={!open}
-      className={cn(
-        "absolute top-[calc(100%+10px)] right-1/2 z-[120] w-[280px] translate-x-1/2 rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-md",
-        "max-w-[calc(100vw-32px)]",
-        t.tooltipBorder,
-        "transition-all duration-200",
-        open
-          ? "visible translate-y-0 opacity-100"
-          : "invisible -translate-y-2 opacity-0"
-      )}
+className={cn(
+  // base (md..2xl): tooltip سمت چپ آیتم داخل منوی کشویی
+  "pointer-events-none absolute top-1/2 right-full z-[120] w-[280px] -translate-y-1/2 rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-md",
+  "mr-3 max-w-[min(280px,calc(100vw-32px))]",
+
+  // 2xl+: tooltip زیر آیتم‌ها در هدر
+  "2xl:top-[calc(100%+10px)] 2xl:right-1/2 2xl:mr-0 2xl:translate-x-1/2 2xl:-translate-y-0",
+
+  t.tooltipBorder,
+  "transition-all duration-200",
+  open
+    ? "visible opacity-100 translate-x-0 2xl:translate-y-0"
+    : "invisible opacity-0 translate-x-2 2xl:-translate-y-2"
+)}
+
     >
-      <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-        <div className={cn("h-4 w-4 rotate-45 border-t border-l bg-white", t.tooltipBorder)} />
-      </div>
+<div className="absolute right-[-8px] top-1/2 -translate-y-1/2 2xl:right-auto 2xl:top--1 2xl:-top-2 2xl:left-1/2 2xl:-translate-x-1/2 2xl:-translate-y-0">
+  <div
+    className={cn(
+      "h-4 w-4 rotate-45 border-t border-r bg-white",
+      "2xl:border-r-0 2xl:border-l",
+      t.tooltipBorder
+    )}
+  />
+</div>
+
 
       <div className="relative overflow-hidden rounded-2xl p-3">
         <div className={cn("absolute inset-0 bg-gradient-to-br opacity-40", t.tooltipGradient)} />
 
-        <div className="relative flex items-start gap-3">
+        <div className="relative flex items-start gap-1">
           <div className="min-w-0 flex-1">
             <span
               className={cn(
@@ -209,21 +222,21 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
               {item.badge ?? "Premium"}
             </span>
 
-            <h4 className="mt-1.5 text-[13px] font-extrabold text-slate-900">
+            <h4 className="mt-0.5 text-[13px] font-extrabold text-slate-900">
               {item.tooltipTitle}
             </h4>
-            <p className="mt-1 text-[11px] leading-5 text-slate-600">
+            <p className="text-[11px] leading-5 text-slate-600">
               {item.tooltipText}
             </p>
           </div>
 
-          <div className="relative h-[70px] w-[70px] shrink-0 overflow-hidden rounded-xl ring-1 ring-white/60">
+          <div className="relative h-[80px] w-[80px] shrink-0 overflow-hidden rounded-xl ring-1 ring-white/60">
             <Image
               src={item.tooltipImage}
               alt={item.tooltipTitle}
               fill
               className={cn("object-cover", t.imageGlow)}
-              sizes="70px"
+              sizes="80px"
             />
           </div>
         </div>
@@ -302,7 +315,7 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
                       setMenuOpen(false);
                     }}
                     aria-describedby={open ? tooltipId : undefined}
-                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-right transition hover:bg-slate-50"
+                    className="group flex hover:cursor-pointer w-full items-center gap-3 rounded-xl px-3 py-3 text-right transition hover:bg-slate-50"
                   >
                     <div
                       className={cn(
@@ -349,7 +362,7 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
                 type="button"
                 onClick={() => onSelect?.(service.id)}
                 aria-describedby={open ? tooltipId : undefined}
-                className="group relative flex h-11 items-center gap-2 rounded-xl px-3 transition hover:bg-slate-50"
+                className="group relative hover:cursor-pointer flex h-11 items-center gap-2 rounded-xl px-3 transition hover:bg-slate-50"
               >
                 <div
                   className={cn(

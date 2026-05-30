@@ -195,28 +195,23 @@ export default function SearchInput() {
         )
       : null;
 
-  return (
-    <>
-      {/* 
-         ساختار هوشمند برای دسکتاپ و موبایل:
-         - در دسکتاپ (xl) عرض آن حداکثر 448 پیکسل است.
-         - در موبایل و تبلت به صورت منعطف (flex-1) کل فضای باقی‌مانده را پر می‌کند.
-         - برای جلوگیری از فشرده شدن بیش از حد در موبایل، min-width داده شده است.
-      */}
-      <div className="flex-1 xl:flex-none xl:w-full xl:max-w-md min-w-[160px] md:min-w-[240px]">
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          className="flex items-center w-full py-2 md:py-2.5 px-3 md:px-4 bg-gray-100 rounded-xl md:rounded-full text-xs md:text-sm text-gray-400 cursor-text hover:bg-gray-200 transition-all border border-transparent hover:border-gray-300"
-        >
-          <Search className="h-4 w-4 text-gray-400 shrink-0" />
-          <span className="flex-1 text-right mr-2 truncate">
-            جستجو در محصولات...
-          </span>
-        </button>
-      </div>
+return (
+  <>
+    <div className="min-w-0 w-full max-w-full xl:max-w-md">
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="flex w-full items-center rounded-xl border border-transparent bg-gray-100 px-3 py-2 text-xs text-gray-400 transition-all hover:border-gray-300 hover:bg-gray-200 md:rounded-full md:px-4 md:py-2.5 md:text-sm"
+      >
+        <Search className="h-4 w-4 shrink-0 text-gray-400" />
+        <span className="mr-2 flex-1 truncate text-right">
+          جستجو در محصولات...
+        </span>
+      </button>
+    </div>
 
-      {portal}
-    </>
-  );
+    {portal}
+  </>
+);
+
 }

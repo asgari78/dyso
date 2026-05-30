@@ -9,13 +9,9 @@ import {
   Tag,
   CalendarDays,
   Sparkles,
+  ChevronDown,
+  Grid2x2,
 } from "lucide-react";
-
-/**
- * =================================================================================
- * SERVICE DEFINITIONS & THEMES
- * =================================================================================
- */
 
 type ServiceId =
   | "custom-notes"
@@ -26,7 +22,6 @@ type ServiceId =
 
 type ServiceTheme = {
   accentText: string;
-  accentTextSoft: string;
   glow: string;
   iconBg: string;
   iconRing: string;
@@ -36,7 +31,6 @@ type ServiceTheme = {
   tooltipGradient: string;
   tooltipBorder: string;
   imageGlow: string;
-  arrowBg: string;
 };
 
 type ServiceItem = {
@@ -53,12 +47,10 @@ type ServiceItem = {
 const THEMES: Record<ServiceId, ServiceTheme> = {
   "custom-notes": {
     accentText: "text-rose-700",
-    accentTextSoft: "text-rose-700/90",
     glow: "bg-rose-300/40",
     iconBg: "bg-rose-50",
     iconRing: "ring-rose-200/70",
     iconText: "text-rose-700",
-    arrowBg: "bg-rose-100",
     pillBg: "bg-rose-50",
     pillText: "text-rose-800",
     tooltipGradient: "from-rose-50 via-white to-amber-50",
@@ -67,12 +59,10 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-flashcards": {
     accentText: "text-fuchsia-700",
-    accentTextSoft: "text-fuchsia-700/90",
     glow: "bg-fuchsia-300/40",
     iconBg: "bg-fuchsia-50",
     iconRing: "ring-fuchsia-200/70",
     iconText: "text-fuchsia-700",
-    arrowBg: "bg-fuchsia-100",
     pillBg: "bg-fuchsia-50",
     pillText: "text-fuchsia-800",
     tooltipGradient: "from-fuchsia-50 via-white to-rose-50",
@@ -81,12 +71,10 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-storybook": {
     accentText: "text-amber-800",
-    accentTextSoft: "text-amber-800/90",
     glow: "bg-amber-300/40",
     iconBg: "bg-amber-50",
     iconRing: "ring-amber-200/70",
     iconText: "text-amber-800",
-    arrowBg: "bg-amber-100",
     pillBg: "bg-amber-50",
     pillText: "text-amber-900",
     tooltipGradient: "from-amber-50 via-white to-orange-50",
@@ -95,12 +83,10 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-nametag": {
     accentText: "text-emerald-800",
-    accentTextSoft: "text-emerald-800/90",
     glow: "bg-emerald-300/40",
     iconBg: "bg-emerald-50",
     iconRing: "ring-emerald-200/70",
     iconText: "text-emerald-800",
-    arrowBg: "bg-emerald-100",
     pillBg: "bg-emerald-50",
     pillText: "text-emerald-900",
     tooltipGradient: "from-emerald-50 via-white to-teal-50",
@@ -109,12 +95,10 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-weekly-plan": {
     accentText: "text-sky-800",
-    accentTextSoft: "text-sky-800/90",
     glow: "bg-sky-300/40",
     iconBg: "bg-sky-50",
     iconRing: "ring-sky-200/70",
     iconText: "text-sky-800",
-    arrowBg: "bg-sky-100",
     pillBg: "bg-sky-50",
     pillText: "text-sky-900",
     tooltipGradient: "from-sky-50 via-white to-indigo-50",
@@ -176,73 +160,10 @@ const SERVICES: ServiceItem[] = [
   },
 ];
 
-/**
- * =================================================================================
- * HELPERS
- * =================================================================================
- */
-
-/**
- * Conditionally join CSS classes for cleaner code.
- */
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-/**
- * Splits a title into two lines, essential for compact Persian text layout.
- * Ensures strict wrapping behavior for RTL consistency.
- */
-function splitTitleForCompact(title: string): React.ReactNode {
-  const words = title.split(" ");
-  if (words.length <= 1) return title;
-  
-  return (
-    <span className="flex flex-col items-start leading-[1.15]">
-      <span>{words[0]}</span>
-      <span className="whitespace-nowrap">{words.slice(1).join(" ")}</span>
-    </span>
-  );
-}
-
-/**
- * =================================================================================
- * SUB-COMPONENTS
- * =================================================================================
- */
-
-/**
- * Decorative shine effect for button interaction.
- */
-function ShineLayer() {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden rounded-xl",
-        "opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-      )}
-    >
-      <span
-        className={cn(
-          "absolute -left-10 -top-10 h-20 w-20 rounded-full blur-2xl",
-          "bg-gradient-to-br from-white/60 via-white/20 to-transparent"
-        )}
-      />
-      <span
-        className={cn(
-          "absolute -bottom-12 -right-10 h-24 w-24 rounded-full blur-2xl",
-          "bg-gradient-to-br from-white/50 via-white/15 to-transparent"
-        )}
-      />
-    </span>
-  );
-}
-
-/**
- * The floating tooltip component.
- * Positioned relative to the parent button, handling RTL alignment.
- */
 type TooltipPanelProps = {
   item: ServiceItem;
   open: boolean;
@@ -258,45 +179,28 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
       role="tooltip"
       aria-hidden={!open}
       className={cn(
-        "absolute top-[calc(100%+12px)] right-1/2 translate-x-1/2 z-[100]",
-        "border rounded-2xl w-[280px]",
+        "absolute top-[calc(100%+10px)] right-1/2 z-[120] w-[280px] translate-x-1/2 rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-md",
+        "max-w-[calc(100vw-32px)]",
         t.tooltipBorder,
-        "bg-white/90 backdrop-blur-md shadow-2xl",
-        "transition-all duration-300 ease-out",
+        "transition-all duration-200",
         open
-          ? "visible opacity-100 translate-y-0 scale-100"
-          : "invisible opacity-0 -translate-y-2 scale-[0.95]"
+          ? "visible translate-y-0 opacity-100"
+          : "invisible -translate-y-2 opacity-0"
       )}
     >
-      {/* Arrow */}
       <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-        <div
-          className={cn(
-            "h-4 w-4 rotate-45 border-t border-l rounded-[2px]",
-            t.tooltipBorder,
-            "bg-white"
-          )}
-        />
+        <div className={cn("h-4 w-4 rotate-45 border-t border-l bg-white", t.tooltipBorder)} />
       </div>
 
       <div className="relative overflow-hidden rounded-2xl p-3">
-        {/* Background Gradient */}
-        <div
-          aria-hidden="true"
-          className={cn(
-            "pointer-events-none absolute inset-0 opacity-40",
-            "bg-gradient-to-br",
-            t.tooltipGradient
-          )}
-        />
+        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-40", t.tooltipGradient)} />
 
         <div className="relative flex items-start gap-3">
-          {/* Content */}
           <div className="min-w-0 flex-1">
             <span
               className={cn(
                 "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                "border border-white/60 bg-white/70 backdrop-blur",
+                "border border-white/60 bg-white/80",
                 t.pillBg,
                 t.pillText
               )}
@@ -305,32 +209,22 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
               {item.badge ?? "Premium"}
             </span>
 
-            <h4 className="mt-1.5 text-[13px] font-extrabold tracking-tight text-slate-900">
+            <h4 className="mt-1.5 text-[13px] font-extrabold text-slate-900">
               {item.tooltipTitle}
             </h4>
-
             <p className="mt-1 text-[11px] leading-5 text-slate-600">
               {item.tooltipText}
             </p>
           </div>
 
-          {/* Image */}
-          <div className="relative w-[70px] h-[70px] shrink-0">
-            <div
-              className={cn(
-                "relative h-full w-full overflow-hidden rounded-xl",
-                "ring-1 ring-white/60 bg-white/50",
-                t.imageGlow
-              )}
-            >
-              <Image
-                src={item.tooltipImage}
-                alt={item.tooltipTitle}
-                fill
-                className="object-cover"
-                sizes="70px"
-              />
-            </div>
+          <div className="relative h-[70px] w-[70px] shrink-0 overflow-hidden rounded-xl ring-1 ring-white/60">
+            <Image
+              src={item.tooltipImage}
+              alt={item.tooltipTitle}
+              fill
+              className={cn("object-cover", t.imageGlow)}
+              sizes="70px"
+            />
           </div>
         </div>
       </div>
@@ -338,108 +232,150 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
   );
 }
 
-/**
- * =================================================================================
- * MAIN COMPONENT
- * =================================================================================
- */
-
 type DesktopServicesProps = {
   onSelect?: (serviceId: ServiceId) => void;
 };
 
 export default function DesktopServices({ onSelect }: DesktopServicesProps) {
   const [hoveredId, setHoveredId] = React.useState<ServiceId | null>(null);
-  const closeTimer = React.useRef<number | null>(null);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
 
-  const handleEnter = React.useCallback((id: ServiceId) => {
-    if (closeTimer.current) {
-      window.clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
-    setHoveredId(id);
-  }, []);
+  React.useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (!wrapperRef.current) return;
+      if (!wrapperRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+        setHoveredId(null);
+      }
+    };
 
-  const handleLeave = React.useCallback(() => {
-    closeTimer.current = window.setTimeout(() => setHoveredId(null), 150);
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
   return (
-    <nav
-      dir="rtl"
-      className={cn(
-        "relative flex items-center justify-start select-none",
-        "w-full h-full", // Ensure parent container takes available space
-        "gap-1 md:gap-2",
-        "lg:px-4"
-      )}
-      aria-label="سرویس‌های اختصاصی"
-      onMouseLeave={handleLeave}
-    >
-      {SERVICES.map((service) => {
-        const Icon = service.icon;
-        const t = service.theme;
-        const open = hoveredId === service.id;
-        const tooltipId = `service-tooltip-${service.id}`;
+    <div ref={wrapperRef} dir="rtl" className="relative min-w-0">
+      {/* compact mode: md تا قبل از 2xl */}
+      <div className="hidden md:block 2xl:hidden">
+        <button
+          type="button"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+        >
+          <Grid2x2 className="h-4 w-4" />
+          <span>خدمات</span>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 transition-transform duration-200",
+              menuOpen && "rotate-180"
+            )}
+          />
+        </button>
 
-        return (
-          <div
-            key={service.id}
-            className="relative"
-            onMouseEnter={() => handleEnter(service.id)}
-          >
-            <button
-              type="button"
-              onClick={() => onSelect?.(service.id)}
-              aria-describedby={open ? tooltipId : undefined}
-              className={cn(
-                "group relative flex items-center gap-2",
-                "h-12 px-3 rounded-xl transition-all duration-300",
-                "cursor-pointer bg-transparent hover:bg-slate-50",
-                "border border-transparent hover:border-slate-100",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20"
-              )}
-            >
-              <ShineLayer />
+        <div
+          className={cn(
+            "absolute right-0 top-[calc(100%+10px)] z-[130] w-[min(92vw,360px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-all duration-200",
+            menuOpen
+              ? "visible translate-y-0 opacity-100"
+              : "invisible -translate-y-2 opacity-0"
+          )}
+        >
+          <div className="grid grid-cols-1 gap-2">
+            {SERVICES.map((service) => {
+              const Icon = service.icon;
+              const open = hoveredId === service.id;
+              const tooltipId = `compact-service-tooltip-${service.id}`;
+              const t = service.theme;
 
-              {/* Icon */}
-              <div
-                className={cn(
-                  "relative flex items-center justify-center shrink-0",
-                  "h-9 w-9 rounded-lg transition-all duration-300",
-                  "ring-1",
-                  t.iconBg,
-                  t.iconRing,
-                  open ? "scale-105 shadow-sm" : "scale-100"
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute inset-0 -z-10 rounded-lg blur-lg opacity-0 transition-opacity duration-300",
-                    open ? "opacity-100" : "opacity-0",
-                    t.glow
-                  )}
-                />
-                <Icon className={cn("h-4 w-4", t.iconText)} />
-              </div>
+              return (
+                <div
+                  key={service.id}
+                  className="relative"
+                  onMouseEnter={() => setHoveredId(service.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelect?.(service.id);
+                      setMenuOpen(false);
+                    }}
+                    aria-describedby={open ? tooltipId : undefined}
+                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-right transition hover:bg-slate-50"
+                  >
+                    <div
+                      className={cn(
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1",
+                        t.iconBg,
+                        t.iconRing
+                      )}
+                    >
+                      <Icon className={cn("h-4 w-4", t.iconText)} />
+                    </div>
 
-              {/* Text */}
-              <div
-                className={cn(
-                  "hidden lg:flex items-center text-right whitespace-nowrap transition-colors duration-300",
-                  "text-[13px] font-bold tracking-tight",
-                  open ? t.accentText : "text-slate-700 group-hover:text-slate-900"
-                )}
-              >
-                {service.title}
-              </div>
-            </button>
+                    <span className={cn("text-sm font-bold", open ? t.accentText : "text-slate-700")}>
+                      {service.title}
+                    </span>
+                  </button>
 
-            <TooltipPanel item={service} open={open} id={tooltipId} />
+                  <TooltipPanel item={service} open={open} id={tooltipId} />
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
-    </nav>
+        </div>
+      </div>
+
+      {/* full desktop mode: فقط 2xl به بالا */}
+      <nav
+        className="hidden 2xl:flex items-center gap-1"
+        aria-label="سرویس‌های اختصاصی"
+      >
+        {SERVICES.map((service) => {
+          const Icon = service.icon;
+          const open = hoveredId === service.id;
+          const tooltipId = `service-tooltip-${service.id}`;
+          const t = service.theme;
+
+          return (
+            <div
+              key={service.id}
+              className="relative"
+              onMouseEnter={() => setHoveredId(service.id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
+              <button
+                type="button"
+                onClick={() => onSelect?.(service.id)}
+                aria-describedby={open ? tooltipId : undefined}
+                className="group relative flex h-11 items-center gap-2 rounded-xl px-3 transition hover:bg-slate-50"
+              >
+                <div
+                  className={cn(
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1",
+                    t.iconBg,
+                    t.iconRing
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", t.iconText)} />
+                </div>
+
+                <span
+                  className={cn(
+                    "whitespace-nowrap text-[13px] font-bold transition-colors",
+                    open ? t.accentText : "text-slate-700"
+                  )}
+                >
+                  {service.title}
+                </span>
+              </button>
+
+              <TooltipPanel item={service} open={open} id={tooltipId} />
+            </div>
+          );
+        })}
+      </nav>
+    </div>
   );
 }

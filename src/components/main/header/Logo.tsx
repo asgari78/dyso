@@ -9,22 +9,16 @@ export default function Logo() {
     <Link
       href="/"
       aria-label="صفحه اصلی"
-      className={[
-        "flex justify-center items-center transition-all",
-        "hover:scale-[1.03]",
-        "origin-left",
-        "select-none",
-      ].join(" ")}
+      className="flex h-10 w-12 items-center justify-center select-none md:h-12"
     >
-      {/* قاب مستطیلی ثابت */}
-      <span className="relative block h-15 flex justify-center items-center w-26">
+      <span className="relative block h-full w-[98px] sm:w-[105px] md:w-[110px] lg:w-[120px]">
         <Image
           src={logoImg}
           alt="Dyso Logo"
           fill
           priority
-          className="object-contain"
-          sizes="(max-width: 640px) 160px, (max-width: 768px) 192px, 220px"
+          className="object-contain object-right"
+          sizes="(max-width: 640px) 88px, (max-width: 768px) 96px, (max-width: 1024px) 110px, 120px"
         />
       </span>
     </Link>

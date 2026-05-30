@@ -149,7 +149,7 @@ export default function UserAuth() {
     return (
       <Link
         href="/auth/login"
-        className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-blue-600 px-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700"
+        className="relative flex px-4 h-12 w-max items-center justify-center rounded-full bg-white text-slate-700 transition-all hover:bg-blue-50 hover:text-blue-600"
       >
         <LogIn className="h-4 w-4" />
         <span className="hidden sm:inline">ورود / ثبت‌نام</span>
@@ -170,12 +170,12 @@ export default function UserAuth() {
       </button>
 
       <div
-        className={[
-          "absolute left-0 top-full z-[120] mt-3 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-all duration-200",
-          openMenu
-            ? "visible translate-y-0 opacity-100"
-            : "invisible -translate-y-1 opacity-0",
-        ].join(" ")}
+className={[
+  "absolute left-0 top-full z-[120] mt-3 w-72 max-w-[calc(100vw-24px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-all duration-200",
+  openMenu
+    ? "visible translate-y-0 opacity-100"
+    : "invisible -translate-y-1 opacity-0",
+].join(" ")}
       >
         {/* هدر کارت */}
         <Link

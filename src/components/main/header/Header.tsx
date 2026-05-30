@@ -7,11 +7,28 @@ import UserAuth from "./UserAuth";
 import Cart from "./Cart";
 import MobileBottomNav from "./MobileBottomNav";
 
-export default function Header() {
+// تعریف تایپ برای Props دریافتی از page.tsx
+export type ServiceId =
+  | "custom-notes"
+  | "custom-flashcards"
+  | "custom-storybook"
+  | "custom-nametag"
+  | "custom-weekly-plan";
+
+type HeaderProps = {
+  activeService: string; // یا به صورت دقیق‌تر ServiceId
+  setActiveService: (serviceId: string) => void;
+};
+
+export default function Header({ activeService, setActiveService }: HeaderProps) {
   return (
     <>
       <div className="md:hidden">
-        <MobileBottomNav />
+        {/* پاس دادن وضعیت به ناوبری موبایل */}
+        <MobileBottomNav 
+          activeServiceId={activeService as ServiceId} 
+          onSelect={setActiveService} 
+        />
       </div>
 
       <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white/80 backdrop-blur-md">
@@ -28,13 +45,13 @@ export default function Header() {
             <Logo />
           </div>
 
-          {/* Services:
-             - hidden on mobile
-             - compact mode in md..xl handled inside component
-             - full mode in 2xl handled inside component
-          */}
+          {/* Services */}
           <div className="hidden min-w-0 md:flex md:shrink xl:shrink-0">
-            <DesktopServices />
+            {/* پاس دادن وضعیت به منوی دسکتاپ */}
+            <DesktopServices 
+              activeServiceId={activeService as ServiceId} 
+              onSelect={setActiveService} 
+            />
           </div>
 
           {/* Search */}
@@ -43,7 +60,7 @@ export default function Header() {
           </div>
 
           {/* Actions */}
-          <div className="flex shrink-0 items-center gap-.5 md:gap-1">
+          <div className="flex shrink-0 items-center gap-0.5 md:gap-1">
             <div className="hidden md:block h-6 w-px bg-slate-200" />
             <Cart />
             <UserAuth />

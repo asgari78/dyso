@@ -10,10 +10,9 @@ import {
   CalendarDays,
   Sparkles,
   ChevronDown,
-  Grid2x2,
 } from "lucide-react";
 
-type ServiceId =
+export type ServiceId =
   | "custom-notes"
   | "custom-flashcards"
   | "custom-storybook"
@@ -47,7 +46,7 @@ type ServiceItem = {
 const THEMES: Record<ServiceId, ServiceTheme> = {
   "custom-notes": {
     accentText: "text-rose-700",
-    glow: "bg-rose-300/40",
+    glow: "bg-rose-400/40",
     iconBg: "bg-rose-50",
     iconRing: "ring-rose-200/70",
     iconText: "text-rose-700",
@@ -59,7 +58,7 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-flashcards": {
     accentText: "text-fuchsia-700",
-    glow: "bg-fuchsia-300/40",
+    glow: "bg-fuchsia-400/40",
     iconBg: "bg-fuchsia-50",
     iconRing: "ring-fuchsia-200/70",
     iconText: "text-fuchsia-700",
@@ -71,7 +70,7 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-storybook": {
     accentText: "text-amber-800",
-    glow: "bg-amber-300/40",
+    glow: "bg-amber-400/40",
     iconBg: "bg-amber-50",
     iconRing: "ring-amber-200/70",
     iconText: "text-amber-800",
@@ -83,7 +82,7 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-nametag": {
     accentText: "text-emerald-800",
-    glow: "bg-emerald-300/40",
+    glow: "bg-emerald-400/40",
     iconBg: "bg-emerald-50",
     iconRing: "ring-emerald-200/70",
     iconText: "text-emerald-800",
@@ -95,7 +94,7 @@ const THEMES: Record<ServiceId, ServiceTheme> = {
   },
   "custom-weekly-plan": {
     accentText: "text-sky-800",
-    glow: "bg-sky-300/40",
+    glow: "bg-sky-400/40",
     iconBg: "bg-sky-50",
     iconRing: "ring-sky-200/70",
     iconText: "text-sky-800",
@@ -178,32 +177,26 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
       id={id}
       role="tooltip"
       aria-hidden={!open}
-className={cn(
-  // base (md..2xl): tooltip سمت چپ آیتم داخل منوی کشویی
-  "pointer-events-none absolute top-1/2 right-full z-[120] w-[280px] -translate-y-1/2 rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-md",
-  "mr-3 max-w-[min(280px,calc(100vw-32px))]",
-
-  // 2xl+: tooltip زیر آیتم‌ها در هدر
-  "2xl:top-[calc(100%+10px)] 2xl:right-1/2 2xl:mr-0 2xl:translate-x-1/2 2xl:-translate-y-0",
-
-  t.tooltipBorder,
-  "transition-all duration-200",
-  open
-    ? "visible opacity-100 translate-x-0 2xl:translate-y-0"
-    : "invisible opacity-0 translate-x-2 2xl:-translate-y-2"
-)}
-
+      className={cn(
+        "pointer-events-none absolute top-1/2 right-full z-[120] w-[280px] -translate-y-1/2 rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-md",
+        "mr-3 max-w-[min(280px,calc(100vw-32px))]",
+        "2xl:top-[calc(100%+10px)] 2xl:right-1/2 2xl:mr-0 2xl:translate-x-1/2 2xl:-translate-y-0",
+        t.tooltipBorder,
+        "transition-all duration-200",
+        open
+          ? "visible opacity-100 translate-x-0 2xl:translate-y-0"
+          : "invisible opacity-0 translate-x-2 2xl:-translate-y-2"
+      )}
     >
-<div className="absolute right-[-8px] top-1/2 -translate-y-1/2 2xl:right-auto 2xl:top--1 2xl:-top-2 2xl:left-1/2 2xl:-translate-x-1/2 2xl:-translate-y-0">
-  <div
-    className={cn(
-      "h-4 w-4 rotate-45 border-t border-r bg-white",
-      "2xl:border-r-0 2xl:border-l",
-      t.tooltipBorder
-    )}
-  />
-</div>
-
+      <div className="absolute right-[-8px] top-1/2 -translate-y-1/2 2xl:right-auto 2xl:-top-2 2xl:left-1/2 2xl:-translate-x-1/2 2xl:-translate-y-0">
+        <div
+          className={cn(
+            "h-4 w-4 rotate-45 border-t border-r bg-white",
+            "2xl:border-r-0 2xl:border-l",
+            t.tooltipBorder
+          )}
+        />
+      </div>
 
       <div className="relative overflow-hidden rounded-2xl p-3">
         <div className={cn("absolute inset-0 bg-gradient-to-br opacity-40", t.tooltipGradient)} />
@@ -246,13 +239,20 @@ className={cn(
 }
 
 type DesktopServicesProps = {
-  onSelect?: (serviceId: ServiceId) => void;
+  activeServiceId: ServiceId;
+  onSelect: (serviceId: ServiceId) => void;
 };
 
-export default function DesktopServices({ onSelect }: DesktopServicesProps) {
+export default function DesktopServices({
+  activeServiceId,
+  onSelect,
+}: DesktopServicesProps) {
   const [hoveredId, setHoveredId] = React.useState<ServiceId | null>(null);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+
+  const activeService =
+    SERVICES.find((service) => service.id === activeServiceId) ?? SERVICES[0];
 
   React.useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
@@ -267,6 +267,14 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
+  const handleSelect = (serviceId: ServiceId) => {
+    onSelect(serviceId);
+    setMenuOpen(false);
+    setHoveredId(null);
+  };
+
+  const ActiveIcon = activeService.icon;
+
   return (
     <div ref={wrapperRef} dir="rtl" className="relative min-w-0">
       {/* compact mode: md تا قبل از 2xl */}
@@ -274,10 +282,28 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          className={cn(
+            "flex h-11 items-center gap-2 rounded-xl border bg-white px-3 text-sm font-bold transition",
+            "hover:bg-slate-50",
+            menuOpen
+              ? "border-slate-300 text-slate-900"
+              : "border-slate-200 text-slate-700"
+          )}
         >
-          <Grid2x2 className="h-4 w-4" />
-          <span>خدمات</span>
+          <div
+            className={cn(
+              "flex h-8 w-8 items-center justify-center rounded-lg ring-1",
+              activeService.theme.iconBg,
+              activeService.theme.iconRing
+            )}
+          >
+            <ActiveIcon className={cn("h-4 w-4", activeService.theme.iconText)} />
+          </div>
+
+          <span className="max-w-[140px] truncate">{activeService.title}</span>
+
           <ChevronDown
             className={cn(
               "h-4 w-4 transition-transform duration-200",
@@ -298,6 +324,7 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
             {SERVICES.map((service) => {
               const Icon = service.icon;
               const open = hoveredId === service.id;
+              const isActive = activeServiceId === service.id;
               const tooltipId = `compact-service-tooltip-${service.id}`;
               const t = service.theme;
 
@@ -310,26 +337,47 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
                 >
                   <button
                     type="button"
-                    onClick={() => {
-                      onSelect?.(service.id);
-                      setMenuOpen(false);
-                    }}
+                    onClick={() => handleSelect(service.id)}
                     aria-describedby={open ? tooltipId : undefined}
-                    className="group flex hover:cursor-pointer w-full items-center gap-3 rounded-xl px-3 py-3 text-right transition hover:bg-slate-50"
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-right transition hover:cursor-pointer",
+                      isActive ? "bg-slate-50" : "hover:bg-slate-50"
+                    )}
                   >
                     <div
                       className={cn(
-                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1",
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 transition",
                         t.iconBg,
-                        t.iconRing
+                        t.iconRing,
+                        isActive && "scale-[1.02]"
                       )}
                     >
                       <Icon className={cn("h-4 w-4", t.iconText)} />
                     </div>
 
-                    <span className={cn("text-sm font-bold", open ? t.accentText : "text-slate-700")}>
-                      {service.title}
-                    </span>
+                    <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                      <span
+                        className={cn(
+                          "truncate text-sm font-bold transition-colors",
+                          isActive || open ? t.accentText : "text-slate-700"
+                        )}
+                      >
+                        {service.title}
+                      </span>
+
+                      {isActive && (
+                        <span
+                          className={cn(
+                            "shrink-0 rounded-full px-2 py-1 text-[10px] font-semibold",
+                            t.pillBg,
+                            t.pillText
+                          )}
+                        >
+                          فعال
+                        </span>
+                      )}
+                    </div>
                   </button>
 
                   <TooltipPanel item={service} open={open} id={tooltipId} />
@@ -348,6 +396,7 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
         {SERVICES.map((service) => {
           const Icon = service.icon;
           const open = hoveredId === service.id;
+          const isActive = activeServiceId === service.id;
           const tooltipId = `service-tooltip-${service.id}`;
           const t = service.theme;
 
@@ -360,13 +409,21 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
             >
               <button
                 type="button"
-                onClick={() => onSelect?.(service.id)}
+                onClick={() => handleSelect(service.id)}
                 aria-describedby={open ? tooltipId : undefined}
-                className="group relative hover:cursor-pointer flex h-11 items-center gap-2 rounded-xl px-3 transition hover:bg-slate-50"
+                aria-current={isActive ? "true" : undefined}
+                className={cn(
+                  "group relative flex h-11 items-center gap-2 rounded-xl px-3 transition hover:cursor-pointer","hover:bg-slate-50",
+                  isActive && t.pillBg
+                )}
               >
+                {isActive && (
+                  <div className={cn("absolute inset-x-2 top-12 bottom-0 h-1 rounded-full", t.glow)} />
+                )}
+
                 <div
                   className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1",
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 transition",
                     t.iconBg,
                     t.iconRing
                   )}
@@ -377,7 +434,7 @@ export default function DesktopServices({ onSelect }: DesktopServicesProps) {
                 <span
                   className={cn(
                     "whitespace-nowrap text-[13px] font-bold transition-colors",
-                    open ? t.accentText : "text-slate-700"
+                    isActive || open ? t.accentText : "text-slate-700"
                   )}
                 >
                   {service.title}

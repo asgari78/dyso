@@ -73,18 +73,14 @@ export interface SelectedTemplate {
 
 export interface Student {
   id: string
-
   firstName: string
   lastName: string
-
   className?: string
-
-  teacherName?: string
-
-  schoolName?: string
-
+  teacher?: string
+  school?: string
   photoUrl?: string
 }
+
 
 /* =========================================
    A4 Sheet

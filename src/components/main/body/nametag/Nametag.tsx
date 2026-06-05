@@ -13,20 +13,22 @@ import { useNametagBuilder } from "./hooks/useNametagBuilder"
 export default function Nametag() {
   const { builder } = useNametagBuilder()
 
-  const renderStep = () => {
-    switch (builder.step) {
-      case 1:
-        return <StepTemplates />
-      case 2:
-        return <StepStudents />
-      case 3:
-        return <StepLayout />
-      // case 4:
-      //   return <StepCheckout />
-      default:
-        return <StepTemplates />
-    }
+const renderStep = () => {
+  switch (builder.step) {
+    case "templates":
+      return <StepTemplates />
+
+    case "students":
+      return <StepStudents />
+
+    case "layout":
+      return <StepLayout />
+
+    default:
+      return null
   }
+}
+
 
   return (
     <div className="w-full h-full flex flex-col">

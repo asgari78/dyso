@@ -7,10 +7,9 @@ import {
   useSensors,
   PointerSensor,
 } from "@dnd-kit/core"
-
+import { Sheet } from "../../types/nametag.types"
 import { useA4Layout } from "../../hooks/useA4Layout"
 import SheetA4 from "./SheetA4"
-
 export default function SheetWorkspace() {
   const { sheets, addItem } = useA4Layout()
 
@@ -27,13 +26,18 @@ export default function SheetWorkspace() {
     const sheetId = over.id as string
 
     // پیش‌فرض اندازه ثابت (بعداً dynamic می‌کنیم)
-    addItem(sheetId, {
-      templateId,
-      x: 50,
-      y: 50,
-      width: 120,
-      height: 60,
-    })
+addItem(sheetId, {
+  templateId,
+  templateSizeId: "pencil",
+  selectedTemplateId: templateId,
+
+  position: {
+    xMm: 50,
+    yMm: 50,
+    widthMm: 120,
+    heightMm: 60,
+  },
+})
   }
 
   return (
@@ -43,12 +47,13 @@ export default function SheetWorkspace() {
     >
       <div className="flex gap-6">
 
-        {sheets.map((sheet) => (
-          <SheetA4
-            key={sheet.id}
-            sheet={sheet}
-          />
-        ))}
+{sheets.map((sheet: Sheet) => (
+  <SheetA4
+    key={sheet.id}
+    sheet={sheet}
+  />
+))}
+
 
       </div>
     </DndContext>

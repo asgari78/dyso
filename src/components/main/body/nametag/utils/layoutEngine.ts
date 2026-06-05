@@ -1,16 +1,18 @@
-import { LayoutItem, Sheet } from "../types/nametag.types"
+import { SheetItem, Sheet } from "../types/nametag.types"
 import { v4 as uuidv4 } from "uuid"
 
-export const createEmptySheet = (): Sheet => ({
+export const createEmptySheet = (index: number = 1): Sheet => ({
   id: uuidv4(),
+  name: `Sheet ${index}`,
   items: [],
 })
 
+
 export const addItemToSheet = (
   sheet: Sheet,
-  item: Omit<LayoutItem, "id">
+  item: Omit<SheetItem, "id">
 ): Sheet => {
-  const newItem: LayoutItem = {
+  const newItem: SheetItem = {
     id: uuidv4(),
     ...item,
   }

@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { Template } from "@/components/main/body/nametag/types/nametag.types"
+import { Template } from "../types/nametag.types"
 
 interface Props {
   templates: Template[]

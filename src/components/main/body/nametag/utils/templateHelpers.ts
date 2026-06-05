@@ -1,4 +1,4 @@
-import { Template, SelectedTemplate } from "@/components/main/body/nametag/types/nametag.types"
+import { Template, SelectedTemplate } from "../types/nametag.types"
 
 /* ===============================
    Count Selected For Template

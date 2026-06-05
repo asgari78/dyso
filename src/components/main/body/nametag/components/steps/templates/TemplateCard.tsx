@@ -1,6 +1,6 @@
 "use client"
 
-import { Template } from "@/components/main/body/nametag/types/nametag.types"
+import { Template } from "../../../types/nametag.types"
 
 interface Props {
   template: Template

@@ -1,7 +1,7 @@
 "use client"
 
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/store/store"
+import { RootState } from "../../../../../store/store"
 import { v4 as uuidv4 } from "uuid"
 
 import {
@@ -87,16 +87,35 @@ export const useA4Layout = () => {
     )
   }
 
-  return {
-    sheets,
-    activeSheetId,
-
-    addSheet,
-    removeSheet,
-    setActive,
-
-    addItem,
-    updateItem,
-    removeItem,
+  const assignStudent = (
+  sheetId: string,
+  itemId: string,
+  studentId: string
+) => {
+  dispatch(
+    updateSheetItem({
+      sheetId,
+      itemId,
+      updates: {
+        studentId,
+      },
+    })
+  )
   }
+
+  return {
+  sheets,
+  activeSheetId,
+
+  addSheet,
+  removeSheet,
+  setActive,
+
+  addItem,
+  updateItem,
+  removeItem,
+
+  assignStudent,
+}
+
 }

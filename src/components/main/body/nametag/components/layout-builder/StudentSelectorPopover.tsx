@@ -2,6 +2,7 @@
 
 import { useNametagBuilder } from "../../hooks/useNametagBuilder"
 import { useA4Layout } from "../../hooks/useA4Layout"
+import { Student } from "../../types/nametag.types"
 
 interface Props {
   sheetId: string
@@ -30,15 +31,16 @@ export default function StudentSelectorPopover({
       </div>
 
       <div className="max-h-60 overflow-auto space-y-1">
-        {builder.students.map((student) => (
-          <button
-            key={student.id}
-            onClick={() => handleSelect(student.id)}
-            className="w-full text-left px-3 py-2 rounded hover:bg-gray-100"
-          >
-            {student.firstName} {student.lastName}
-          </button>
-        ))}
+{builder.students.map((student: Student) => (
+  <button
+    key={student.id}
+    onClick={() => handleSelect(student.id)}
+    className="w-full text-right px-3 py-2 hover:bg-gray-100 rounded"
+  >
+    {student.firstName} {student.lastName}
+  </button>
+))}
+
       </div>
 
     </div>

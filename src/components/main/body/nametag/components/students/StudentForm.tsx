@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Student } from "@/components/main/body/nametag/types/nametag.types"
+import { Student } from "../../types/nametag.types"
 
 interface Props {
   initialData?: Partial<Student>

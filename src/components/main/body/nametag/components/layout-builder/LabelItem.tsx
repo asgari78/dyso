@@ -1,11 +1,11 @@
 "use client"
 
 import { useDraggable } from "@dnd-kit/core"
-import { LayoutItem } from "../../types/nametag.types"
+import { SheetItem } from "../../types/nametag.types"
 import { CSS } from "@dnd-kit/utilities"
 
 interface Props {
-  item: LayoutItem
+  item: SheetItem
   sheetId: string
 }
 
@@ -17,10 +17,10 @@ export default function LabelItem({ item }: Props) {
 
   const style = {
     position: "absolute" as const,
-    left: item.x,
-    top: item.y,
-    width: item.width,
-    height: item.height,
+    left: item.position.xMm,
+    top: item.position.yMm,
+    width: item.position.widthMm,
+    height: item.position.heightMm,
     transform: CSS.Translate.toString(transform),
   }
 

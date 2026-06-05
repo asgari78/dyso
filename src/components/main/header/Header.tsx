@@ -31,7 +31,7 @@ export default function Header({ activeService, setActiveService }: HeaderProps)
         />
       </div>
 
-      <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white/80 backdrop-blur-md shadow">
         <div
           className="
             mx-auto flex h-16 w-full items-center gap-2 px-3

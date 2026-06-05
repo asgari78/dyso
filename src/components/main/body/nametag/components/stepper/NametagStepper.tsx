@@ -1,7 +1,6 @@
 "use client"
 
-import { Check, ChevronLeft, ChevronRight, Circle } from "lucide-react"
-
+import { Check, Circle } from "lucide-react"
 import { useNametagBuilder } from "../../hooks/useNametagBuilder"
 
 type StepKey = "templates" | "students" | "layout" | "checkout"
@@ -9,29 +8,24 @@ type StepKey = "templates" | "students" | "layout" | "checkout"
 interface StepItem {
   key: StepKey
   label: string
-  description: string
 }
 
 const steps: StepItem[] = [
   {
     key: "templates",
-    label: "قالب‌ها",
-    description: "انتخاب قالب مناسب برای برچسب‌ها",
+    label: "قالب‌ها"
   },
   {
     key: "students",
-    label: "دانش‌آموزان",
-    description: "ثبت و مدیریت اطلاعات دانش‌آموزان",
+    label: "دانش‌آموزان"
   },
   {
     key: "layout",
     label: "چیدمان",
-    description: "قرار دادن برچسب‌ها روی برگه A4",
   },
   {
     key: "checkout",
-    label: "تسویه حساب",
-    description: "بررسی نهایی و پرداخت",
+    label: "پرداخت"
   },
 ]
 
@@ -40,120 +34,162 @@ function getStepIndex(step: StepKey) {
 }
 
 export default function NametagStepper() {
-  const { step, goToStep } = useNametagBuilder()
+  const { step, goToStep, selectedTemplates, students, sheets } =
+    useNametagBuilder()
 
   const currentStepIndex = getStepIndex(step as StepKey)
 
+  const isStepCompleted = (stepKey: StepKey) => {
+    switch (stepKey) {
+      case "templates":
+        return selectedTemplates.length > 0
+
+      case "students":
+        return students.length > 0
+
+      case "layout":
+        return sheets.some((s) => s.items.length > 0)
+
+      default:
+        return false
+    }
+  }
+
+  const canNavigateTo = (targetIndex: number) => {
+    if (targetIndex <= currentStepIndex) return true
+    const prevStep = steps[targetIndex - 1]
+    return isStepCompleted(prevStep.key)
+  }
+
   const handleStepClick = (stepKey: StepKey) => {
     const targetIndex = getStepIndex(stepKey)
-    if (targetIndex <= currentStepIndex) {
+    if (canNavigateTo(targetIndex)) {
       goToStep(stepKey)
     }
   }
 
   return (
-    <section className="w-full flex items-center flex-col p-4 sm:p-6">
+    <div className="sticky md:top-[72] top-[65px] z-[60] w-full bg-gray-50">
 
-      {/* Desktop Stepper */}
-      <div className="hidden w-full md:block justify-center">
-        <div className="relative w-full flex justify-center">
-          <div className="absolute left-0 right-0 top-5 h-0.5 w-full bg-slate-200" />
 
-          <div className="relative w-full xl:w-max z-10 grid grid-cols-4 gap-4">
+      {/* connector line full width */}
+      <div className="absolute hidden md:flex left-0 right-0 top-7 h-[2px] bg-slate-200" />
+
+      <div className="mx-auto max-w-6xl px-4 pt-3">
+
+        {/* Desktop */}
+        <div className="hidden md:block py-1">
+
+          <div className="relative flex items-center justify-between">
+
             {steps.map((item, index) => {
               const isActive = item.key === step
               const isCompleted = index < currentStepIndex
-              const isClickable = index <= currentStepIndex
+              const isClickable = canNavigateTo(index)
 
               return (
                 <button
                   key={item.key}
-                  type="button"
                   onClick={() => handleStepClick(item.key)}
                   disabled={!isClickable}
-                  className={`group flex flex-col items-center text-center transition ${
-                    isClickable ? "cursor-pointer" : "cursor-not-allowed"
-                  }`}
+                  className={`flex flex-col items-center gap-1 transition
+                  ${isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
+                  `}
                 >
+                  {/* circle */}
                   <span
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition ${
+                    className={`
+                    flex h-6 w-6 items-center justify-center
+                    rounded-full border text-[10px]
+                    transition
+                    ${
                       isCompleted
-                        ? "border-emerald-500 bg-emerald-500 text-white"
+                        ? "bg-emerald-500 border-emerald-500 text-white"
                         : isActive
-                          ? "border-sky-600 bg-sky-600 text-white shadow-md shadow-sky-200"
-                          : "border-slate-300 bg-white text-slate-400"
-                    }`}
+                        ? "bg-sky-600 border-sky-600 text-white"
+                        : "bg-white border-slate-300 text-slate-400"
+                    }
+                    `}
                   >
                     {isCompleted ? (
-                      <Check className="h-5 w-5" />
+                      <Check className="h-3 w-3" />
                     ) : (
-                      <Circle className="h-3 w-3" />
+                      <Circle className="h-2 w-2" />
                     )}
                   </span>
 
-                  <span className="mt-3 text-sm font-semibold text-slate-900">
+                  {/* label */}
+                  <span
+                    className={`text-[11px] whitespace-nowrap
+                    ${
+                      isActive
+                        ? "text-sky-700 font-semibold"
+                        : "text-slate-500"
+                    }
+                    `}
+                  >
                     {item.label}
-                  </span>
-
-                  <span className="mt-1 max-w-[180px] text-xs leading-5 text-slate-500">
-                    {item.description}
                   </span>
                 </button>
               )
             })}
           </div>
         </div>
-      </div>
 
-      {/* Mobile Stepper */}
-      <div className="space-y-3 md:hidden w-full">
-        {steps.map((item, index) => {
-          const isActive = item.key === step
-          const isCompleted = index < currentStepIndex
-          const isClickable = index <= currentStepIndex
+        {/* Mobile */}
+        <div className="md:hidden space-y-2">
 
-          return (
-            <button
-              key={item.key}
-              type="button"
-              onClick={() => handleStepClick(item.key)}
-              disabled={!isClickable}
-              className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-right transition ${
-                isActive
-                  ? "border-sky-500 bg-sky-50"
-                  : isCompleted
+          {steps.map((item, index) => {
+            const isActive = item.key === step
+            const isCompleted = index < currentStepIndex
+            const isClickable = canNavigateTo(index)
+
+            return (
+              <button
+                key={item.key}
+                onClick={() => handleStepClick(item.key)}
+                disabled={!isClickable}
+                className={`
+                flex w-full items-center gap-2 rounded-lg border px-3 py-2 transition
+                ${
+                  isActive
+                    ? "border-sky-500 bg-sky-50"
+                    : isCompleted
                     ? "border-emerald-200 bg-emerald-50"
                     : "border-slate-200 bg-white"
-              } ${isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
-            >
-              <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
-                  isCompleted
-                    ? "border-emerald-500 bg-emerald-500 text-white"
-                    : isActive
-                      ? "border-sky-600 bg-sky-600 text-white"
-                      : "border-slate-300 bg-white text-slate-400"
-                }`}
+                }
+                ${isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
+                `}
               >
-                {isCompleted ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Circle className="h-2.5 w-2.5" />
-                )}
-              </span>
+                <span
+                  className={`
+                  flex h-6 w-6 items-center justify-center rounded-full border
+                  ${
+                    isCompleted
+                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      : isActive
+                      ? "bg-sky-600 border-sky-600 text-white"
+                      : "border-slate-300 text-slate-400"
+                  }
+                  `}
+                >
+                  {isCompleted ? (
+                    <Check className="h-3 w-3" />
+                  ) : (
+                    <Circle className="h-2 w-2" />
+                  )}
+                </span>
 
-              <span className="flex-1">
-                <span className="block text-sm font-semibold text-slate-900">
-                  {item.label}
+                <span className="flex-1 text-right">
+                  <span className="block text-xs font-semibold text-slate-900">
+                    {item.label}
+                  </span>
                 </span>
-                <span className="mt-0.5 block text-xs text-slate-500">
-                  {item.description}
-                </span>
-              </span>
-            </button>
-          )
-        })}
+              </button>
+            )
+          })}
+        </div>
       </div>
-    </section>
+    </div>
   )
 }

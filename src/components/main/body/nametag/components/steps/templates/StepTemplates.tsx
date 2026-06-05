@@ -4,7 +4,11 @@ import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 
 import { mockTemplates } from "../../../data/mockTemplates"
-import { Template, TemplateSize, SelectedTemplate } from "../../../types/nametag.types"
+import {
+  Template,
+  TemplateSize,
+  SelectedTemplate,
+} from "../../../types/nametag.types"
 
 import { useNametagBuilder } from "../../../hooks/useNametagBuilder"
 
@@ -24,17 +28,15 @@ const PAGE_SIZE = 8
 
 export default function StepTemplates() {
   const { builder, addTemplateToSelection } = useNametagBuilder()
-
   const selectedTemplates = builder.selectedTemplates
 
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState<string | null>(null)
   const [page, setPage] = useState(1)
-
   const [activeTemplate, setActiveTemplate] =
     useState<Template | null>(null)
 
-  /* filters */
+  /* ---------------- Filters ---------------- */
 
   const filtered = useTemplateFilters({
     templates: mockTemplates,
@@ -47,7 +49,7 @@ export default function StepTemplates() {
     selectedTemplates
   )
 
-  /* pagination */
+  /* ---------------- Pagination ---------------- */
 
   const { totalPages, paginatedItems } =
     useTemplatePagination({
@@ -58,7 +60,7 @@ export default function StepTemplates() {
 
   const categories = extractCategories(mockTemplates)
 
-  /* handlers */
+  /* ---------------- Handlers ---------------- */
 
   const handleAddSize = (
     template: Template,
@@ -77,93 +79,151 @@ export default function StepTemplates() {
     addTemplateToSelection(selected)
   }
 
+  /* ---------------- UI ---------------- */
+
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl mx-auto px-4 md:px-6">
 
-      {/* Header */}
+      <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-10">
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">
-          انتخاب قالب
-        </h2>
+        {/* ================= Sidebar ================= */}
 
-        <span className="text-sm text-gray-500">
-          {selectedTemplates.length} مورد انتخاب شده
-        </span>
-      </div>
+        <aside className="space-y-6 md:sticky md:top-[140px] h-fit">
 
-      {/* Search */}
+          {/* Selected Count Badge */}
 
-      <div className="flex gap-4">
+          <div className="rounded-xl p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-sm text-center">
 
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="جستجو..."
-          className="px-4 py-2 rounded-xl"
-        />
+            <p className="text-xs text-gray-500 mb-1">
+              قالب‌های انتخاب‌شده
+            </p>
 
-        <select
-          value={category ?? ""}
-          onChange={(e) =>
-            setCategory(e.target.value || null)
-          }
-          className="px-4 py-2 rounded-xl"
-        >
-          <option value="">همه</option>
+            <div className="text-2xl font-bold text-blue-600">
+              {selectedTemplates.length}
+            </div>
 
-          {categories.map((cat) => (
-            <option key={cat}>{cat}</option>
-          ))}
-        </select>
+          </div>
 
-      </div>
+          {/* Search */}
 
-      {/* Grid */}
+          <div className="w-full bg-white border rounded-xl p-4 space-y-3 shadow-sm">
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <h3 className="text-sm font-semibold text-gray-700">
+              جستجو
+            </h3>
 
-        {paginatedItems.map((template) => (
-          <TemplateCard
-            key={template.id}
-            template={template}
-            selectedCount={countSelectedForTemplate(
-              selectedTemplates,
-              template.id
-            )}
-            onOpenSizes={setActiveTemplate}
-          />
-        ))}
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
+              placeholder="نام قالب را وارد کنید..."
+              className="w-full px-3 py-2 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition"
+            />
 
-      </div>
+          </div>
 
-      {/* Pagination */}
+          {/* Category */}
 
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
+          <div className="w-full bg-white border rounded-xl p-4 space-y-3 shadow-sm">
 
-          {Array.from({ length: totalPages }).map(
-            (_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i + 1)}
-                className={`px-3 py-1 rounded-lg
-                ${
-                  page === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200"
-                }
-                `}
-              >
-                {i + 1}
-              </button>
-            )
+            <h3 className="text-sm font-semibold text-gray-700">
+              دسته‌بندی
+            </h3>
+
+            <select
+              value={category ?? ""}
+              onChange={(e) => {
+                setCategory(e.target.value || null)
+                setPage(1)
+              }}
+              className="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+            >
+              <option value="">همه دسته‌ها</option>
+              {categories.map((cat) => (
+                <option key={cat}>{cat}</option>
+              ))}
+            </select>
+
+          </div>
+
+        </aside>
+
+        {/* ================= Templates Section ================= */}
+
+        <section className="space-y-8">
+
+          {/* Grid */}
+
+          <div
+            className="
+            grid
+            grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-3
+            2xl:grid-cols-4
+            gap-6
+            "
+          >
+            {paginatedItems.map((template) => (
+              <TemplateCard
+                key={template.id}
+                template={template}
+                selectedCount={countSelectedForTemplate(
+                  selectedTemplates,
+                  template.id
+                )}
+                onOpenSizes={setActiveTemplate}
+              />
+            ))}
+          </div>
+
+          {/* Empty State */}
+
+          {paginatedItems.length === 0 && (
+            <div className="text-center py-20 text-gray-400 text-sm">
+              قالبی مطابق فیلتر شما یافت نشد
+            </div>
           )}
 
-        </div>
-      )}
+          {/* Pagination */}
 
-      {/* Size Modal */}
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 pt-6">
+
+              {Array.from({ length: totalPages }).map((_, i) => {
+
+                const isActive = page === i + 1
+
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setPage(i + 1)}
+                    className={`
+                    min-w-[36px] h-[36px]
+                    text-sm rounded-lg
+                    transition-all duration-200
+                    ${
+                      isActive
+                        ? "bg-blue-600 text-white shadow-md scale-105"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    }
+                    `}
+                  >
+                    {i + 1}
+                  </button>
+                )
+              })}
+
+            </div>
+          )}
+
+        </section>
+
+      </div>
+
+      {/* ================= Modal ================= */}
 
       {activeTemplate && (
         <TemplateSizeModal
@@ -174,6 +234,7 @@ export default function StepTemplates() {
           }
         />
       )}
+
     </div>
   )
 }

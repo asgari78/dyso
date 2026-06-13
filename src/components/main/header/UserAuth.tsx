@@ -106,25 +106,25 @@ export default function UserAuth() {
     {
       id: "orders",
       label: "سفارش‌ها",
-      href: "/profile?tab=orders",
+      href: "/account?tab=orders",
       icon: ClipboardList,
     },
     {
       id: "addresses",
       label: "آدرس‌ها",
-      href: "/profile?tab=addresses",
+      href: "/account?tab=addresses",
       icon: MapPin,
     },
     {
       id: "favorites",
       label: "لیست مورد علاقه‌ها",
-      href: "/profile?tab=favorites",
+      href: "/account?tab=favorites",
       icon: Heart,
     },
     {
       id: "comments",
       label: "دیدگاه‌ها و پرسش‌ها",
-      href: "/profile?tab=comments",
+      href: "/account?tab=comments",
       icon: MessageSquareText,
     },
     {
@@ -145,17 +145,30 @@ export default function UserAuth() {
   }
 
   // حالت مهمان
-  if (!user) {
-    return (
+if (!user) {
+  return (
+    <>
+      {/* موبایل: فقط آیکون */}
       <Link
         href="/auth/login"
-        className="relative flex px-4 h-12 w-max items-center justify-center rounded-full bg-white text-slate-700 transition-all hover:bg-blue-50 hover:text-blue-600"
+        className="flex h-9 w-9 items-center justify-center rounded-lg  border-slate-200 bg-white text-slate-700 transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 sm:hidden"
+        aria-label="ورود / ثبت‌نام"
       >
         <LogIn className="h-4 w-4" />
-        <span className="hidden sm:inline">ورود / ثبت‌نام</span>
       </Link>
-    );
-  }
+
+      {/* دسکتاپ: متن + آیکون */}
+      <Link
+        href="/auth/login"
+        className="hidden h-9 items-center gap-2 rounded-lg  border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 sm:flex md:h-10 md:text-sm"
+      >
+        <LogIn className="h-4 w-4" />
+        <span>ورود / ثبت‌نام</span>
+      </Link>
+    </>
+  );
+}
+
 
   // حالت کاربر لاگین شده
   return (
@@ -163,7 +176,7 @@ export default function UserAuth() {
       <button
         type="button"
         onClick={() => setOpenMenu((prev) => !prev)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 md:h-10 md:w-10 md:rounded-xl"
         aria-label="منوی کاربر"
       >
         <User2 className="h-5 w-5" />
@@ -178,9 +191,10 @@ className={[
 ].join(" ")}
       >
         {/* هدر کارت */}
-        <Link
-          href="/profile"
-          onClick={() => setOpenMenu(false)}
+<Link
+  href="/account"
+  onClick={() => setOpenMenu(false)}
+
           className="flex items-center justify-between rounded-xl px-3 py-3 transition-colors duration-200 hover:bg-slate-50"
         >
           <div className="flex min-w-0 items-center gap-3">
@@ -232,7 +246,7 @@ className={[
             return (
               <Link
                 key={item.id}
-                href={item.href || "/profile"}
+href={item.href || "/account"}
                 onClick={() => setOpenMenu(false)}
                 className="flex items-center justify-between rounded-xl px-3 py-2.5 text-slate-700 transition-colors duration-200 hover:bg-slate-50"
               >

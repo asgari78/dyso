@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ShoppingBag,
   Trash2,
   Plus,
   Minus,
@@ -15,6 +14,7 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
+
 import imgexam from "../../../../public/assets/logo/logo.png";
 
 interface CartItem {
@@ -144,20 +144,21 @@ export default function Cart() {
       }}
     >
       {/* آیکون سبد خرید */}
-      <button
-        type="button"
-        onClick={handleCartClick}
-        className="relative flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-700 transition-all hover:bg-blue-50 hover:text-blue-600"
-        aria-label="سبد خرید"
-      >
-        <ShoppingBag className="h-6 w-6" />
+<button
+  type="button"
+  onClick={handleCartClick}
+  className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-slate-700 transition-colors hover:bg-blue-50 hover:text-blue-600 sm:h-9 sm:w-9"
+  aria-label="سبد خرید"
+>
+  <ShoppingCart className="h-[18px] w-[18px] sm:h-[19px] sm:w-[19px]" strokeWidth={1.9} />
 
-        {totalItems > 0 && (
-          <span className="absolute -right-0 -top-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white ring-2 ring-white xl:h-5 xl:min-w-5 xl:px-0 xl:text-[10px]">
-            {totalItems}
-          </span>
-        )}
-      </button>
+  {totalItems > 0 && (
+    <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-white sm:h-[14px] sm:min-w-[14px] sm:text-[10px]">
+      {totalItems > 99 ? "99+" : totalItems}
+    </span>
+  )}
+</button>
+
 
       {/* dropdown فقط در دسکتاپ */}
       {!isMobile && (

@@ -96,25 +96,26 @@ export default function SearchInput() {
               className="mx-auto mt-16 w-full max-w-2xl px-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white rounded-2xl p-2 flex items-center gap-2 shadow-2xl mb-3 border border-blue-100">
-                <Search className="mr-3 text-gray-400" size={20} />
-                <input
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submit()}
-                  placeholder="جستجوی نام کتاب، نویسنده و..."
-                  className="flex-1 py-1 text-md outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
-                  aria-label="بستن"
-                >
-                  <X size={22} />
-                </button>
-              </div>
+<div className="mb-3 flex items-center gap-2 rounded-xl border border-blue-100 bg-white p-2 shadow-2xl">
+  <Search className="mr-2.5 text-gray-400" size={18} />
+  <input
+    autoFocus
+    value={query}
+    onChange={(e) => setQuery(e.target.value)}
+    onKeyDown={(e) => e.key === "Enter" && submit()}
+    placeholder="جستجوی نام کتاب، نویسنده و..."
+    className="h-9 flex-1 text-sm outline-none placeholder:text-gray-400"
+  />
+  <button
+    type="button"
+    onClick={() => setIsOpen(false)}
+    className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100"
+    aria-label="بستن"
+  >
+    <X size={18} />
+  </button>
+</div>
+
 
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
                 <div className="p-4 space-y-6">
@@ -198,16 +199,17 @@ export default function SearchInput() {
 return (
   <>
     <div className="min-w-0 w-full max-w-full xl:max-w-md">
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="flex w-full items-center rounded-xl border border-transparent bg-gray-100 px-3 py-2 text-xs text-gray-400 transition-all hover:border-gray-300 hover:bg-gray-200 md:rounded-full md:px-4 md:py-2.5 md:text-sm"
-      >
-        <Search className="h-4 w-4 shrink-0 text-gray-400" />
-        <span className="mr-2 flex-1 truncate text-right">
-          جستجو در محصولات...
-        </span>
-      </button>
+<button
+  type="button"
+  onClick={() => setIsOpen(true)}
+  className="flex h-9 w-full items-center rounded-lg border border-transparent bg-gray-100 px-3 text-[11px] text-gray-500 transition-all hover:border-gray-300 hover:bg-gray-200 sm:h-10 sm:text-xs md:rounded-xl md:px-3.5 md:text-sm"
+>
+  <Search className="h-4 w-4 shrink-0 text-gray-400" />
+  <span className="mr-2 flex-1 truncate text-right">
+    جستجو در محصولات...
+  </span>
+</button>
+
     </div>
 
     {portal}

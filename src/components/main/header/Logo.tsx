@@ -1,3 +1,4 @@
+// src/components/main/header/Logo.tsx
 "use client";
 
 import Image from "next/image";
@@ -9,9 +10,9 @@ export default function Logo() {
     <Link
       href="/"
       aria-label="صفحه اصلی"
-      className="flex h-14 items-center select-none md:h-17 2xl:h-20"
+      className="flex h-12 items-center select-none md:h-14 2xl:h-16"
     >
-      <span className="relative block h-full w-[66px] sm:w-[78px] md:w-[70px] lg:w-[85px] xl:w-[102px]">
+      <span className="relative block h-full w-[66px] sm:w-[78px] md:w-[70px] lg:w-[70px] xl:w-[70px]">
         <Image
           src={logoImg}
           alt="Dyso Logo"

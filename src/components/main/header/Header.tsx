@@ -31,42 +31,33 @@ export default function Header({ activeService, setActiveService }: HeaderProps)
         />
       </div>
 
-      <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white/80 backdrop-blur-md shadow">
-        <div
-          className="
-            mx-auto flex h-16 w-full items-center gap-2 px-3
-            md:h-20 md:px-4
-            lg:px-6
-            2xl:container
-          "
-        >
-          {/* Logo */}
-          <div className="shrink-0">
-            <Logo />
-          </div>
+<header className="sticky top-0 z-[100] border-b border-slate-100 bg-white/90 backdrop-blur-md">
+  <div className="mx-auto w-full max-w-7xl px-3 sm:px-4 lg:px-6">
+    <div className="hidden md:flex h-14 md:h-16 min-w-0 items-center gap-2">
+      <div className="shrink-0">
+        <Logo />
+      </div>
 
-          {/* Services */}
-          <div className="hidden min-w-0 md:flex md:shrink xl:shrink-0">
-            {/* پاس دادن وضعیت به منوی دسکتاپ */}
-            <DesktopServices 
-              activeServiceId={activeService as ServiceId} 
-              onSelect={setActiveService} 
-            />
-          </div>
+      <div className="hidden min-w-0 md:flex items-center md:shrink xl:shrink-0">
+        <DesktopServices
+          activeServiceId={activeService as ServiceId}
+          onSelect={setActiveService}
+        />
+      </div>
 
-          {/* Search */}
-          <div className="min-w-0 flex-1">
-            <SearchInput />
-          </div>
+      <div className="min-w-0 flex-1 md:max-w-115 lg:max-w-140 flex items-center">
+        <SearchInput />
+      </div>
 
-          {/* Actions */}
-          <div className="flex shrink-0 items-center gap-0.5 md:gap-1">
-            <div className="hidden md:block h-6 w-px bg-slate-200" />
-            <Cart />
-            <UserAuth />
-          </div>
-        </div>
-      </header>
+      <div className="flex shrink-0 items-center gap-1.5 md:gap-2">
+        <div className="hidden md:block h-6 w-px me-2 bg-slate-200" />
+        <Cart />
+        <UserAuth />
+      </div>
+    </div>
+  </div>
+</header>
+
     </>
   );
 }

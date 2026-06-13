@@ -21,7 +21,6 @@ export type ServiceId =
 
 type ServiceTheme = {
   accentText: string;
-  glow: string;
   iconBg: string;
   iconRing: string;
   iconText: string;
@@ -46,62 +45,57 @@ type ServiceItem = {
 const THEMES: Record<ServiceId, ServiceTheme> = {
   "custom-notes": {
     accentText: "text-rose-700",
-    glow: "bg-rose-400/40",
     iconBg: "bg-rose-50",
     iconRing: "ring-rose-200/70",
     iconText: "text-rose-700",
     pillBg: "bg-rose-50",
     pillText: "text-rose-800",
     tooltipGradient: "from-rose-50 via-white to-amber-50",
-    tooltipBorder: "border-rose-400/70",
+    tooltipBorder: "border-rose-300/70",
     imageGlow: "shadow-[0_10px_30px_rgba(244,63,94,0.15)]",
   },
   "custom-flashcards": {
     accentText: "text-fuchsia-700",
-    glow: "bg-fuchsia-400/40",
     iconBg: "bg-fuchsia-50",
     iconRing: "ring-fuchsia-200/70",
     iconText: "text-fuchsia-700",
     pillBg: "bg-fuchsia-50",
     pillText: "text-fuchsia-800",
     tooltipGradient: "from-fuchsia-50 via-white to-rose-50",
-    tooltipBorder: "border-fuchsia-400/70",
+    tooltipBorder: "border-fuchsia-300/70",
     imageGlow: "shadow-[0_10px_30px_rgba(217,70,239,0.15)]",
   },
   "custom-storybook": {
     accentText: "text-amber-800",
-    glow: "bg-amber-400/40",
     iconBg: "bg-amber-50",
     iconRing: "ring-amber-200/70",
     iconText: "text-amber-800",
     pillBg: "bg-amber-50",
     pillText: "text-amber-900",
     tooltipGradient: "from-amber-50 via-white to-orange-50",
-    tooltipBorder: "border-amber-400/70",
+    tooltipBorder: "border-amber-300/70",
     imageGlow: "shadow-[0_10px_30px_rgba(245,158,11,0.15)]",
   },
   "custom-nametag": {
     accentText: "text-emerald-800",
-    glow: "bg-emerald-400/40",
     iconBg: "bg-emerald-50",
     iconRing: "ring-emerald-200/70",
     iconText: "text-emerald-800",
     pillBg: "bg-emerald-50",
     pillText: "text-emerald-900",
     tooltipGradient: "from-emerald-50 via-white to-teal-50",
-    tooltipBorder: "border-emerald-400/70",
+    tooltipBorder: "border-emerald-300/70",
     imageGlow: "shadow-[0_10px_30px_rgba(16,185,129,0.15)]",
   },
   "custom-weekly-plan": {
     accentText: "text-sky-800",
-    glow: "bg-sky-400/40",
     iconBg: "bg-sky-50",
     iconRing: "ring-sky-200/70",
     iconText: "text-sky-800",
     pillBg: "bg-sky-50",
     pillText: "text-sky-900",
     tooltipGradient: "from-sky-50 via-white to-indigo-50",
-    tooltipBorder: "border-sky-400/70",
+    tooltipBorder: "border-sky-300/70",
     imageGlow: "shadow-[0_10px_30px_rgba(14,165,233,0.15)]",
   },
 };
@@ -178,30 +172,30 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
       role="tooltip"
       aria-hidden={!open}
       className={cn(
-        "pointer-events-none absolute top-1/2 right-full z-[120] w-[280px] -translate-y-1/2 rounded-2xl border bg-white/95 shadow-2xl backdrop-blur-md",
-        "mr-3 max-w-[min(280px,calc(100vw-32px))]",
-        "2xl:top-[calc(100%+10px)] 2xl:right-1/2 2xl:mr-0 2xl:translate-x-1/2 2xl:-translate-y-0",
+        "pointer-events-none absolute top-1/2 right-full z-[120] w-[270px] -translate-y-1/2 rounded-xl border bg-white/95 shadow-xl backdrop-blur-md",
+        "mr-3 max-w-[min(270px,calc(100vw-32px))]",
+        "2xl:top-[calc(100%+8px)] 2xl:right-1/2 2xl:mr-0 2xl:translate-x-1/2 2xl:-translate-y-0",
         t.tooltipBorder,
-        "transition-all duration-200",
+        "transition-all duration-150",
         open
           ? "visible opacity-100 translate-x-0 2xl:translate-y-0"
           : "invisible opacity-0 translate-x-2 2xl:-translate-y-2"
       )}
     >
-      <div className="absolute right-[-8px] top-1/2 -translate-y-1/2 2xl:right-auto 2xl:-top-2 2xl:left-1/2 2xl:-translate-x-1/2 2xl:-translate-y-0">
+      <div className="absolute right-[-7px] top-1/2 -translate-y-1/2 2xl:right-auto 2xl:-top-2 2xl:left-1/2 2xl:-translate-x-1/2 2xl:-translate-y-0">
         <div
           className={cn(
-            "h-4 w-4 rotate-45 border-t border-r bg-white",
+            "h-3.5 w-3.5 rotate-45 border-t border-r bg-white",
             "2xl:border-r-0 2xl:border-l",
             t.tooltipBorder
           )}
         />
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl p-3">
-        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-40", t.tooltipGradient)} />
+      <div className="relative overflow-hidden rounded-xl p-3">
+        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-35", t.tooltipGradient)} />
 
-        <div className="relative flex items-start gap-1">
+        <div className="relative flex items-start gap-2">
           <div className="min-w-0 flex-1">
             <span
               className={cn(
@@ -215,7 +209,7 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
               {item.badge ?? "Premium"}
             </span>
 
-            <h4 className="mt-0.5 text-[13px] font-extrabold text-slate-900">
+            <h4 className="mt-1 text-[12px] font-extrabold text-slate-900">
               {item.tooltipTitle}
             </h4>
             <p className="text-[11px] leading-5 text-slate-600">
@@ -223,13 +217,13 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
             </p>
           </div>
 
-          <div className="relative h-[80px] w-[80px] shrink-0 overflow-hidden rounded-xl ring-1 ring-white/60">
+          <div className="relative h-[74px] w-[74px] shrink-0 overflow-hidden rounded-lg ring-1 ring-white/60">
             <Image
               src={item.tooltipImage}
               alt={item.tooltipTitle}
               fill
               className={cn("object-cover", t.imageGlow)}
-              sizes="80px"
+              sizes="74px"
             />
           </div>
         </div>
@@ -285,7 +279,7 @@ export default function DesktopServices({
           aria-haspopup="menu"
           aria-expanded={menuOpen}
           className={cn(
-            "flex h-11 items-center gap-2 rounded-xl border bg-white px-3 text-sm font-bold transition",
+            "flex h-9 items-center gap-1.5 rounded-lg border bg-white px-2.5 text-xs font-semibold transition",
             "hover:bg-slate-50",
             menuOpen
               ? "border-slate-300 text-slate-900"
@@ -294,19 +288,19 @@ export default function DesktopServices({
         >
           <div
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg ring-1",
+              "flex h-7 w-7 items-center justify-center rounded-md ring-1",
               activeService.theme.iconBg,
               activeService.theme.iconRing
             )}
           >
-            <ActiveIcon className={cn("h-4 w-4", activeService.theme.iconText)} />
+            <ActiveIcon className={cn("h-3.5 w-3.5", activeService.theme.iconText)} />
           </div>
 
-          <span className="max-w-[140px] truncate">{activeService.title}</span>
+          <span className="max-w-[120px] truncate">{activeService.title}</span>
 
           <ChevronDown
             className={cn(
-              "h-4 w-4 transition-transform duration-200",
+              "h-3.5 w-3.5 transition-transform duration-200",
               menuOpen && "rotate-180"
             )}
           />
@@ -314,13 +308,13 @@ export default function DesktopServices({
 
         <div
           className={cn(
-            "absolute right-0 top-[calc(100%+10px)] z-[130] w-[min(92vw,360px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-all duration-200",
+            "absolute right-0 top-[calc(100%+8px)] z-[130] w-[min(92vw,340px)] rounded-xl border border-slate-200 bg-white p-2 shadow-[0_16px_38px_rgba(15,23,42,0.12)] transition-all duration-150",
             menuOpen
               ? "visible translate-y-0 opacity-100"
-              : "invisible -translate-y-2 opacity-0"
+              : "invisible -translate-y-1.5 opacity-0"
           )}
         >
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-1.5">
             {SERVICES.map((service) => {
               const Icon = service.icon;
               const open = hoveredId === service.id;
@@ -340,26 +334,22 @@ export default function DesktopServices({
                     onClick={() => handleSelect(service.id)}
                     aria-describedby={open ? tooltipId : undefined}
                     aria-current={isActive ? "true" : undefined}
-                    className={cn(
-                      "group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-right transition hover:cursor-pointer",
-                      isActive ? "bg-slate-50" : "hover:bg-slate-50"
-                    )}
+                    className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-right transition hover:cursor-pointer hover:bg-slate-50"
                   >
                     <div
                       className={cn(
-                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ring-1 transition",
+                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-md ring-1 transition",
                         t.iconBg,
-                        t.iconRing,
-                        isActive && "scale-[1.02]"
+                        t.iconRing
                       )}
                     >
-                      <Icon className={cn("h-4 w-4", t.iconText)} />
+                      <Icon className={cn("h-3.5 w-3.5", t.iconText)} />
                     </div>
 
                     <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
                       <span
                         className={cn(
-                          "truncate text-sm font-bold transition-colors",
+                          "truncate text-[13px] font-semibold transition-colors",
                           isActive || open ? t.accentText : "text-slate-700"
                         )}
                       >
@@ -369,7 +359,7 @@ export default function DesktopServices({
                       {isActive && (
                         <span
                           className={cn(
-                            "shrink-0 rounded-full px-2 py-1 text-[10px] font-semibold",
+                            "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
                             t.pillBg,
                             t.pillText
                           )}
@@ -389,10 +379,7 @@ export default function DesktopServices({
       </div>
 
       {/* full desktop mode: فقط 2xl به بالا */}
-      <nav
-        className="hidden 2xl:flex items-center gap-1"
-        aria-label="سرویس‌های اختصاصی"
-      >
+      <nav className="hidden 2xl:flex items-center gap-0.5" aria-label="سرویس‌های اختصاصی">
         {SERVICES.map((service) => {
           const Icon = service.icon;
           const open = hoveredId === service.id;
@@ -412,28 +399,26 @@ export default function DesktopServices({
                 onClick={() => handleSelect(service.id)}
                 aria-describedby={open ? tooltipId : undefined}
                 aria-current={isActive ? "true" : undefined}
-                className={cn(
-                  "group relative flex h-11 items-center gap-2 rounded-xl px-3 transition hover:cursor-pointer","hover:bg-slate-50",
-                  isActive && t.pillBg
-                )}
+                className="group relative flex h-9 items-center gap-1.5 rounded-lg px-2.5 transition hover:cursor-pointer hover:bg-slate-50"
               >
+                {/* underline ثابت برای همه سرویس‌های فعال */}
                 {isActive && (
-                  <div className={cn("absolute inset-x-2 top-12 bottom-0 h-1 rounded-full", t.glow)} />
+                  <span className="absolute inset-x-2 -bottom-[5px] h-[2px] rounded-full bg-slate-700" />
                 )}
 
                 <div
                   className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 transition",
+                    "flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-md ring-1",
                     t.iconBg,
                     t.iconRing
                   )}
                 >
-                  <Icon className={cn("h-4 w-4", t.iconText)} />
+                  <Icon className={cn("h-3.5 w-3.5", t.iconText)} />
                 </div>
 
                 <span
                   className={cn(
-                    "whitespace-nowrap text-[13px] font-bold transition-colors",
+                    "whitespace-nowrap text-[12px] font-semibold transition-colors",
                     isActive || open ? t.accentText : "text-slate-700"
                   )}
                 >

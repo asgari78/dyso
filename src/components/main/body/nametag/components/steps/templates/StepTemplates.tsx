@@ -1,6 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { Search, SlidersHorizontal, X } from "lucide-react"
 import { v4 as uuidv4 } from "uuid"
 
 import { mockTemplates } from "../../../data/mockTemplates"
@@ -9,57 +10,40 @@ import {
   TemplateSize,
   SelectedTemplate,
 } from "../../../types/nametag.types"
-
 import { useNametagBuilder } from "../../../hooks/useNametagBuilder"
+import { useTemplateFilters } from "../../../hooks/useTemplateFilters"
+import { useTemplatePagination } from "../../../hooks/useTemplatePagination"
+import {
+  countSelectedForTemplate,
+  extractCategories,
+  sortTemplatesPinnedFirst,
+} from "../../../utils/templateHelpers"
 
 import TemplateCard from "./TemplateCard"
 import TemplateSizeModal from "./TemplateSizeModal"
 import SelectedTemplateSizesModal from "./SelectedTemplateSizesModal"
 
-import { useTemplateFilters } from "../../../hooks/useTemplateFilters"
-import { useTemplatePagination } from "../../../hooks/useTemplatePagination"
-
-import {
-  countSelectedForTemplate,
-  sortTemplatesPinnedFirst,
-  extractCategories,
-} from "../../../utils/templateHelpers"
-
 const PAGE_SIZE = 12
 
-type ViewState = "ready" | "empty-dataset" | "no-results"
-
 export default function StepTemplates() {
-const { builder, addTemplateToSelection, removeTemplateFromSelection } = useNametagBuilder()
-
-
-
+  const { builder, addTemplateToSelection, removeTemplateFromSelection } =
+    useNametagBuilder()
 
   const selectedTemplates = builder.selectedTemplates
+  const templates = mockTemplates
 
-  /** ---------------- Local UI State ---------------- */
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState<string | null>(null)
   const [page, setPage] = useState(1)
 
-  // مودال انتخاب سایز (افزودن)
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null)
-
-  // مودال مدیریت انتخاب‌های ثبت شده
   const [selectedManageTemplate, setSelectedManageTemplate] =
     useState<Template | null>(null)
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false)
 
-  /** ---------------- Data Source ---------------- */
-  const templates = mockTemplates
-
-  /** ---------------- Derived Data ---------------- */
   const categories = useMemo(() => extractCategories(templates), [templates])
 
-  const filtered = useTemplateFilters({
-    templates,
-    search,
-    category,
-  })
+  const filtered = useTemplateFilters({ templates, search, category })
 
   const sorted = useMemo(
     () => sortTemplatesPinnedFirst(filtered, selectedTemplates),
@@ -72,234 +56,207 @@ const { builder, addTemplateToSelection, removeTemplateFromSelection } = useName
     pageSize: PAGE_SIZE,
   })
 
-  const viewState: ViewState = useMemo(() => {
-    if (templates.length === 0) return "empty-dataset"
-    if (sorted.length === 0) return "no-results"
-    return "ready"
-  }, [templates.length, sorted.length])
-
-  /** ---------------- Guards ---------------- */
   useEffect(() => {
-    if (page > totalPages && totalPages > 0) {
-      setPage(totalPages)
-    }
+    if (page > totalPages && totalPages > 0) setPage(totalPages)
   }, [page, totalPages])
 
-  /** ---------------- Builders ---------------- */
-  const buildSelectedTemplate = useCallback(
-    (template: Template, size: TemplateSize): SelectedTemplate => ({
-      id: uuidv4(),
-      templateId: template.id,
-      templateName: template.name,
-      sizeId: size.id,
-      widthMm: size.widthMm,
-      heightMm: size.heightMm,
-      previewImage: size.previewImage || template.previewImage,
-    }),
-    []
-  )
+  const buildSelectedTemplate = (
+    template: Template,
+    size: TemplateSize
+  ): SelectedTemplate => ({
+    id: uuidv4(),
+    templateId: template.id,
+    templateName: template.name,
+    sizeId: size.id,
+    widthMm: size.widthMm,
+    heightMm: size.heightMm,
+    previewImage: size.previewImage || template.previewImage,
+  })
 
-  /** ---------------- Handlers ---------------- */
-  const handleAddSize = useCallback(
-    (template: Template, size: TemplateSize) => {
-      const selected = buildSelectedTemplate(template, size)
-      addTemplateToSelection(selected)
-    },
-    [addTemplateToSelection, buildSelectedTemplate]
-  )
+  const handleAddSize = (template: Template, size: TemplateSize) => {
+    addTemplateToSelection(buildSelectedTemplate(template, size))
+  }
 
-  /**
-   * کلیک روی کل کارت:
-   * اگر یک سایز داشت => مستقیم اضافه شود
-   * اگر چند سایز داشت => مودال انتخاب سایز باز شود
-   */
-  const handleOpenTemplate = useCallback(
-    (template: Template) => {
-      if (template.sizes.length === 1) {
-        handleAddSize(template, template.sizes[0])
-        return
-      }
-      setActiveTemplate(template)
-    },
-    [handleAddSize]
-  )
+  const handleOpenTemplate = (template: Template) => {
+    if (template.sizes.length === 1) {
+      handleAddSize(template, template.sizes[0])
+      return
+    }
+    setActiveTemplate(template)
+  }
 
-  const handleOpenSelected = useCallback((template: Template) => {
-    setSelectedManageTemplate(template)
-  }, [])
-
-  const handleCloseSelected = useCallback(() => {
-    setSelectedManageTemplate(null)
-  }, [])
-
-const handleRemoveSelected = useCallback(
-  (selectedTemplateId: string) => {
-    removeTemplateFromSelection(selectedTemplateId)
-  },
-  [removeTemplateFromSelection]
-)
-
-
-
-
-  const getSelectedForTemplate = useCallback(
-    (templateId: string) =>
-      selectedTemplates.filter((item) => item.templateId === templateId),
-    [selectedTemplates]
-  )
-
-  const handleSearchChange = useCallback((value: string) => {
-    setSearch(value)
-    setPage(1)
-  }, [])
-
-  const handleCategoryChange = useCallback((value: string) => {
-    setCategory(value || null)
-    setPage(1)
-  }, [])
-
-  const handleResetFilters = useCallback(() => {
+  const resetFilters = () => {
     setSearch("")
     setCategory(null)
     setPage(1)
-  }, [])
+  }
 
-  /** ---------------- UI ---------------- */
+  const selectedForTemplate = (templateId: string) =>
+    selectedTemplates.filter((item) => item.templateId === templateId)
+
+  const isEmptyDataset = templates.length === 0
+  const isNoResults = !isEmptyDataset && sorted.length === 0
+
   return (
-    <div className="mx-auto max-w-7xl px-4 md:px-6">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-[280px_1fr] lg:gap-10">
-        {/* ================= Sidebar ================= */}
-        <aside className="h-fit space-y-5 md:sticky md:top-[140px]">
-          {/* Selected Count */}
-          <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 text-center shadow-sm">
-            <p className="mb-1 text-xs text-gray-500">قالب‌های انتخاب‌شده</p>
-            <div className="text-2xl font-bold text-blue-600">
-              {selectedTemplates.length}
+    <div className="mx-auto w-full max-w-7xl">
+      <div className="sticky top-[98px] md:top-[110px] z-20  bg-white/200 backdrop-blur supports-[backdrop-filter]:bg-white/200">
+        <div className="px-3 sm:px-4 md:px-6 py-2">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
+            <div className="h-8 sm:h-9 w-full lg:w-52 rounded-lg bg-slate-900 text-white px-3 flex items-center justify-between shrink-0">
+              <span className="text-[11px] sm:text-xs opacity-90">قالب‌های انتخاب‌شده</span>
+              <span className="text-sm sm:text-base font-bold tabular-nums">
+                {selectedTemplates.length}
+              </span>
             </div>
-          </div>
 
-          {/* Search */}
-          <div className="w-full space-y-3 rounded-xl border bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-700">جستجو</h3>
-            <input
-              value={search}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              placeholder="نام قالب را وارد کنید..."
-              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-blue-500"
-              aria-label="جستجوی قالب"
-            />
-          </div>
-
-          {/* Category */}
-          <div className="w-full space-y-3 rounded-xl border bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-700">دسته‌بندی</h3>
-            <select
-              value={category ?? ""}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2 text-sm transition focus:ring-2 focus:ring-blue-500"
-              aria-label="فیلتر دسته‌بندی قالب"
-            >
-              <option value="">همه دسته‌ها</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              className="w-full rounded-lg bg-gray-100 py-2 text-sm text-gray-700 transition hover:bg-gray-200"
-            >
-              پاک کردن فیلترها
-            </button>
-          </div>
-        </aside>
-
-        {/* ================= Templates Section ================= */}
-        <section className="space-y-6">
-          {/* Top Summary */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-gray-800 md:text-lg">
-              انتخاب قالب
-            </h2>
-            <p className="text-xs text-gray-500 md:text-sm">
-              {sorted.length} قالب یافت شد
-            </p>
-          </div>
-
-          {/* Empty dataset */}
-          {viewState === "empty-dataset" && (
-            <div className="rounded-xl border bg-white py-20 text-center text-gray-500">
-              هیچ قالبی برای نمایش وجود ندارد.
-            </div>
-          )}
-
-          {/* No results */}
-          {viewState === "no-results" && (
-            <div className="space-y-2 rounded-xl border bg-white py-20 text-center text-gray-500">
-              <p>قالبی مطابق فیلتر شما یافت نشد.</p>
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition hover:bg-blue-700"
-              >
-                بازنشانی فیلترها
-              </button>
-            </div>
-          )}
-
-          {/* Grid */}
-          {viewState === "ready" && (
-            <>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                {paginatedItems.map((template) => (
-                  <TemplateCard
-                    key={template.id}
-                    template={template}
-                    selectedCount={countSelectedForTemplate(
-                      selectedTemplates,
-                      template.id
-                    )}
-                    onOpenSizes={handleOpenTemplate}
-                    onOpenSelected={handleOpenSelected}
-                  />
-                ))}
+            <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 flex-1">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value)
+                    setPage(1)
+                  }}
+                  placeholder="جستجوی قالب..."
+                  className="h-9 w-full rounded-lg bg-slate-50 pr-8 pl-3 text-xs sm:text-sm text-slate-800 outline-none transition focus:bg-white focus:ring-2 focus:ring-slate-200"
+                  aria-label="جستجوی قالب"
+                />
               </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center gap-2 pt-2 md:pt-4">
-                  {Array.from({ length: totalPages }).map((_, i) => {
-                    const pageNumber = i + 1
-                    const isActive = page === pageNumber
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowCategoryMenu((v) => !v)}
+                  className="h-9 w-9 rounded-lg border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 transition"
+                  aria-label="فیلتر دسته‌بندی"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                </button>
 
-                    return (
+                {showCategoryMenu && (
+                  <div className="absolute left-0 mt-2 min-w-44 rounded-xl border border-slate-200 bg-white shadow-lg p-1 z-30">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategory(null)
+                        setPage(1)
+                        setShowCategoryMenu(false)
+                      }}
+                      className={`w-full rounded-lg px-3 py-2 text-right text-xs sm:text-sm transition ${
+                        category === null
+                          ? "bg-slate-100 text-slate-900"
+                          : "hover:bg-slate-50 text-slate-700"
+                      }`}
+                    >
+                      همه دسته‌ها
+                    </button>
+
+                    {categories.map((cat) => (
                       <button
-                        key={pageNumber}
+                        key={cat}
                         type="button"
-                        onClick={() => setPage(pageNumber)}
-                        className={`h-[36px] min-w-[36px] rounded-lg text-sm transition-all duration-200 ${
-                          isActive
-                            ? "scale-105 bg-blue-600 text-white shadow-md"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        onClick={() => {
+                          setCategory(cat)
+                          setPage(1)
+                          setShowCategoryMenu(false)
+                        }}
+                        className={`w-full rounded-lg px-3 py-2 text-right text-xs sm:text-sm transition ${
+                          category === cat
+                            ? "bg-slate-100 text-slate-900"
+                            : "hover:bg-slate-50 text-slate-700"
                         }`}
-                        aria-label={`رفتن به صفحه ${pageNumber}`}
-                        aria-current={isActive ? "page" : undefined}
                       >
-                        {pageNumber}
+                        {cat}
                       </button>
-                    )
-                  })}
-                </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {(search || category) && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="h-9 w-9 rounded-lg border border-slate-200 bg-white text-slate-500 grid place-items-center hover:bg-slate-50 transition"
+                  aria-label="پاک کردن فیلترها"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               )}
-            </>
-          )}
-        </section>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ================= Modal: Add Size ================= */}
+      <section className="px-3 sm:px-4 md:px-6 pt-3 sm:pt-4 pb-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm sm:text-base font-bold text-slate-800">انتخاب قالب</h2>
+          <p className="text-[11px] sm:text-xs text-slate-500">{sorted.length} قالب یافت شد</p>
+        </div>
+
+        {isEmptyDataset && (
+          <div className="rounded-xl border border-slate-200 bg-white py-16 text-center text-sm text-slate-500">
+            هیچ قالبی برای نمایش وجود ندارد.
+          </div>
+        )}
+
+        {isNoResults && (
+          <div className="rounded-xl border border-slate-200 bg-white py-16 text-center">
+            <p className="text-sm text-slate-500">قالبی مطابق فیلتر شما یافت نشد.</p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-3 rounded-lg bg-slate-900 px-4 py-2 text-xs sm:text-sm text-white hover:bg-slate-800 transition"
+            >
+              بازنشانی فیلترها
+            </button>
+          </div>
+        )}
+
+        {!isEmptyDataset && !isNoResults && (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4">
+              {paginatedItems.map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  template={template}
+                  selectedCount={countSelectedForTemplate(selectedTemplates, template.id)}
+                  onOpenSizes={handleOpenTemplate}
+                  onOpenSelected={setSelectedManageTemplate}
+                  compact
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-5 flex justify-center gap-2">
+                {Array.from({ length: totalPages }).map((_, i) => {
+                  const n = i + 1
+                  const active = n === page
+                  return (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setPage(n)}
+                      className={`h-8 min-w-8 sm:h-9 sm:min-w-9 rounded-lg text-xs sm:text-sm transition ${
+                        active
+                          ? "bg-slate-900 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                      aria-label={`رفتن به صفحه ${n}`}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      {n}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
       {activeTemplate && (
         <TemplateSizeModal
           template={activeTemplate}
@@ -308,13 +265,12 @@ const handleRemoveSelected = useCallback(
         />
       )}
 
-      {/* ================= Modal: Manage Selected Sizes ================= */}
       {selectedManageTemplate && (
         <SelectedTemplateSizesModal
           template={selectedManageTemplate}
-          selectedItems={getSelectedForTemplate(selectedManageTemplate.id)}
-          onClose={handleCloseSelected}
-          onRemove={handleRemoveSelected}
+          selectedItems={selectedForTemplate(selectedManageTemplate.id)}
+          onClose={() => setSelectedManageTemplate(null)}
+          onRemove={removeTemplateFromSelection}
         />
       )}
     </div>

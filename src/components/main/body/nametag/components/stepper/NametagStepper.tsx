@@ -1,130 +1,76 @@
 "use client"
 
-import { Check, Circle } from "lucide-react"
+import { Check } from "lucide-react"
 import { useNametagBuilder } from "../../hooks/useNametagBuilder"
 
 type StepKey = "templates" | "students" | "layout" | "checkout"
 
-interface StepItem {
-  key: StepKey
-  label: string
-}
-
-const steps: StepItem[] = [
-  {
-    key: "templates",
-    label: "قالب‌ها"
-  },
-  {
-    key: "students",
-    label: "دانش‌آموزان"
-  },
-  {
-    key: "layout",
-    label: "چیدمان",
-  },
-  {
-    key: "checkout",
-    label: "پرداخت"
-  },
+const steps: { key: StepKey; label: string }[] = [
+  { key: "templates", label: "قالب‌ها" },
+  { key: "students", label: "دانش‌آموزان" },
+  { key: "layout", label: "چیدمان" },
+  { key: "checkout", label: "پرداخت" },
 ]
 
-function getStepIndex(step: StepKey) {
-  return steps.findIndex((item) => item.key === step)
-}
-
 export default function NametagStepper() {
-  const { step, goToStep, selectedTemplates, students, sheets } =
-    useNametagBuilder()
+  const { step, goToStep, selectedTemplates, students, sheets } = useNametagBuilder()
+  const currentIndex = steps.findIndex((s) => s.key === (step as StepKey))
 
-  const currentStepIndex = getStepIndex(step as StepKey)
-
-  const isStepCompleted = (stepKey: StepKey) => {
-    switch (stepKey) {
-      case "templates":
-        return selectedTemplates.length > 0
-
-      case "students":
-        return students.length > 0
-
-      case "layout":
-        return sheets.some((s) => s.items.length > 0)
-
-      default:
-        return false
-    }
+  const isStepCompleted = (key: StepKey) => {
+    if (key === "templates") return selectedTemplates.length > 0
+    if (key === "students") return students.length > 0
+    if (key === "layout") return sheets.some((s) => s.items.length > 0)
+    return false
   }
 
   const canNavigateTo = (targetIndex: number) => {
-    if (targetIndex <= currentStepIndex) return true
-    const prevStep = steps[targetIndex - 1]
-    return isStepCompleted(prevStep.key)
-  }
-
-  const handleStepClick = (stepKey: StepKey) => {
-    const targetIndex = getStepIndex(stepKey)
-    if (canNavigateTo(targetIndex)) {
-      goToStep(stepKey)
+    if (targetIndex <= currentIndex) return true
+    for (let i = 0; i < targetIndex; i++) {
+      if (!isStepCompleted(steps[i].key)) return false
     }
+    return true
   }
 
   return (
-    <div className="sticky top-[60px] md:top-[65px] z-20 w-full bg-gray-50">
-      {/* connector line full width */}
-      <div className="absolute hidden md:flex left-0 right-0 top-5 h-0.5 bg-slate-200" />
+    <div className="sticky top-[54px] md:top-[65px] z-30 w-full border-b border-slate-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+      <div className="mx-auto max-w-6xl px-3 sm:px-4 md:px-6 py-1.5 sm:py-2">
+        <div className="relative">
+          <div className="absolute left-0 right-0 top-3 sm:top-3.5 h-px bg-slate-200" />
 
-      <div className="mx-auto max-w-6xl px-4 pt-2">
-
-        {/* Desktop */}
-        <div className="hidden md:block">
-
-          <div className="relative flex items-center justify-between">
-
+          <div className="relative grid grid-cols-4 gap-1 sm:gap-2">
             {steps.map((item, index) => {
-              const isActive = item.key === step
-              const isCompleted = index < currentStepIndex
-              const isClickable = canNavigateTo(index)
+              const active = index === currentIndex
+              const completed = index < currentIndex
+              const clickable = canNavigateTo(index)
 
               return (
                 <button
                   key={item.key}
-                  onClick={() => handleStepClick(item.key)}
-                  disabled={!isClickable}
-                  className={`flex flex-col items-center gap-1 transition
-                  ${isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-50"}
-                  `}
+                  type="button"
+                  onClick={() => clickable && goToStep(item.key)}
+                  disabled={!clickable}
+                  className={`flex flex-col items-center gap-1 rounded-md py-0.5 transition ${
+                    clickable ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+                  }`}
                 >
-                  {/* circle */}
                   <span
-                    className={`
-                    flex h-6 w-6 items-center justify-center
-                    rounded-full border text-[10px]
-                    transition
+                    className={`z-10 flex items-center justify-center rounded-full border transition
+                    h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-[10px] sm:text-xs
                     ${
-                      isCompleted
-                        ? "bg-emerald-500 border-emerald-500 text-white"
-                        : isActive
-                        ? "bg-sky-600 border-sky-600 text-white"
-                        : "bg-white border-slate-300 text-slate-400"
-                    }
-                    `}
+                      completed
+                        ? "border-emerald-500 bg-emerald-500 text-white"
+                        : active
+                        ? "border-sky-600 bg-sky-600 text-white"
+                        : "border-slate-300 bg-white text-slate-500"
+                    }`}
                   >
-                    {isCompleted ? (
-                      <Check className="h-3 w-3" />
-                    ) : (
-                      <Circle className="h-2 w-2" />
-                    )}
+                    {completed ? <Check className="h-3 w-3" /> : index + 1}
                   </span>
 
-                  {/* label */}
                   <span
-                    className={`text-[11px] whitespace-nowrap
-                    ${
-                      isActive
-                        ? "text-sky-700 font-semibold"
-                        : "text-slate-500"
-                    }
-                    `}
+                    className={`text-[9px] sm:text-[10px] md:text-xs leading-none whitespace-nowrap ${
+                      active ? "font-semibold text-sky-700" : "text-slate-500"
+                    }`}
                   >
                     {item.label}
                   </span>
@@ -132,60 +78,6 @@ export default function NametagStepper() {
               )
             })}
           </div>
-        </div>
-
-        {/* Mobile */}
-        <div className="md:hidden space-y-2">
-
-          {steps.map((item, index) => {
-            const isActive = item.key === step
-            const isCompleted = index < currentStepIndex
-            const isClickable = canNavigateTo(index)
-
-            return (
-              <button
-                key={item.key}
-                onClick={() => handleStepClick(item.key)}
-                disabled={!isClickable}
-                className={`
-                flex w-full items-center gap-2 rounded-lg border px-3 py-2 transition
-                ${
-                  isActive
-                    ? "border-sky-500 bg-sky-50"
-                    : isCompleted
-                    ? "border-emerald-200 bg-emerald-50"
-                    : "border-slate-200 bg-white"
-                }
-                ${isClickable ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
-                `}
-              >
-                <span
-                  className={`
-                  flex h-6 w-6 items-center justify-center rounded-full border
-                  ${
-                    isCompleted
-                      ? "bg-emerald-500 border-emerald-500 text-white"
-                      : isActive
-                      ? "bg-sky-600 border-sky-600 text-white"
-                      : "border-slate-300 text-slate-400"
-                  }
-                  `}
-                >
-                  {isCompleted ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Circle className="h-2 w-2" />
-                  )}
-                </span>
-
-                <span className="flex-1 text-right">
-                  <span className="block text-xs font-semibold text-slate-900">
-                    {item.label}
-                  </span>
-                </span>
-              </button>
-            )
-          })}
         </div>
       </div>
     </div>

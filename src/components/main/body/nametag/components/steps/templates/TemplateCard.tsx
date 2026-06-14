@@ -41,52 +41,70 @@ function TemplateCardBase({
           onOpenSizes(template)
         }
       }}
-      className={[
-        "group relative cursor-pointer overflow-hidden rounded-2xl border bg-white p-3 md:p-4",
-        "transition-all duration-200",
-        "hover:-translate-y-0.5 hover:shadow-lg",
-        "focus-within:ring-2 focus-within:ring-blue-500",
-        isSelected
-          ? "border-blue-500 ring-2 ring-blue-100"
-          : "border-gray-200 hover:border-gray-300",
-      ].join(" ")}
       aria-label={`قالب ${template.name}`}
+      className={[
+        "group relative cursor-pointer overflow-hidden rounded-2xl border bg-white",
+        "border-gray-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500",
+        // بدون hover border/shadow
+      ].join(" ")}
     >
-      {/* Preview */}
-      <div className="relative mb-3 h-44 w-full overflow-hidden rounded-xl bg-gray-50">
+      {/* تصویر تمام عرض، بدون padding، با ارتفاع یکسان */}
+      <div className="relative w-full h-28 xs:h-32 sm:h-36 md:h-40 bg-gray-100">
         <Image
           src={template.previewImage}
           alt={`پیش‌نمایش قالب ${template.name}`}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          // در گرید 2 ستونه موبایل، هر کارت تقریبا نصف ویوپورت است
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover object-center"
           priority={false}
+          quality={90}
         />
+
+        {/* در حالت انتخاب‌شده، عنوان روی عکس پایین قرار می‌گیرد */}
+        {isSelected && (
+          <div className="absolute inset-x-0 bottom-0 px-2 py-1.5 bg-gradient-to-t from-black/55 to-transparent">
+            <h3 className="line-clamp-1 text-[12px] sm:text-sm font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]">
+              {template.name}
+            </h3>
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="space-y-2 text-right">
-        <h3 className="line-clamp-1 text-sm md:text-base font-semibold text-gray-900">
-          {template.name}
-        </h3>
+      {/* محتوای متنی */}
+      <div
+        className={[
+          "p-2.5 sm:p-3 text-right",
+          // اگر selected باشد، جا برای دکمه کف کارت باز می‌کنیم
+          isSelected ? "pb-12 sm:pb-14" : "",
+        ].join(" ")}
+      >
+        {/* وقتی selected نیست عنوان اینجا نمایش داده می‌شود */}
+        {!isSelected && (
+          <h3 className="line-clamp-1 text-[12px] sm:text-sm md:text-base font-semibold text-gray-900 mb-1.5">
+            {template.name}
+          </h3>
+        )}
 
-        <div className="flex items-center justify-between text-xs text-gray-600">
-          <span className="inline-flex items-center gap-1">
-            {hasSingleSize ? (
-              <Ruler className="h-3.5 w-3.5" />
-            ) : (
-              <Layers3 className="h-3.5 w-3.5" />
-            )}
-            {sizeLabel}
+        {/* توضیحات همیشه دیده شوند (حتی در selected) */}
+        <div className="flex flex-col gap-1.5">
+          <span className="inline-flex w-fit items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] sm:text-[11px] text-gray-700">
+            {template.category}
           </span>
 
-          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-700">
-            {template.category}
+          <span className="inline-flex items-center gap-1 text-[11px] sm:text-xs text-gray-600">
+            {hasSingleSize ? (
+              <Ruler className="h-3.5 w-3.5 shrink-0" />
+            ) : (
+              <Layers3 className="h-3.5 w-3.5 shrink-0" />
+            )}
+            <span className="line-clamp-1">{sizeLabel}</span>
           </span>
         </div>
       </div>
 
-      {/* Footer-like floating selected action (does NOT change card height) */}
+      {/* دکمه انتخاب‌ها: پایین‌ترین بخش کارت، تمام عرض، بدون فاصله از اطراف */}
       {isSelected && (
         <button
           type="button"
@@ -95,16 +113,18 @@ function TemplateCardBase({
             onOpenSelected(template)
           }}
           className={[
-            "absolute bottom-3 left-3 right-3 z-10",
-            "inline-flex items-center justify-center gap-2 rounded-xl",
-            "bg-blue-600/95 px-3 py-2 text-xs md:text-sm font-medium text-white shadow-md backdrop-blur-sm",
-            "transition hover:bg-blue-700",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400",
+            "absolute bottom-0 left-0 right-0 z-10",
+            "h-10 sm:h-11",
+            "hover:bg-blue-800 hover:cursor-pointer transition-all",
+            "inline-flex items-center justify-center gap-1.5",
+            "rounded-none", // بدون گردی برای چسبیدن کامل
+            "bg-blue-600 text-white text-[11px] sm:text-xs font-medium",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset",
           ].join(" ")}
           aria-label={`مدیریت ${selectedCount} انتخاب برای قالب ${template.name}`}
         >
           <ListChecks className="h-4 w-4" />
-          {selectedCount} انتخاب‌شده 
+          {selectedCount} انتخاب‌شده
         </button>
       )}
     </article>

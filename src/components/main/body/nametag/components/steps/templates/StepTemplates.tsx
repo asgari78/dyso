@@ -30,8 +30,8 @@ const PAGE_SIZE = 12
 type ViewState = "ready" | "empty-dataset" | "no-results"
 
 export default function StepTemplates() {
-  const { builder, addTemplateToSelection, setSelectedTemplates } =
-  useNametagBuilder()
+const { builder, addTemplateToSelection, setBuilder } = useNametagBuilder()
+
 
 
   const selectedTemplates = builder.selectedTemplates
@@ -137,12 +137,16 @@ export default function StepTemplates() {
 
 const handleRemoveSelected = useCallback(
   (selectedTemplateId: string) => {
-    setSelectedTemplates(
-      builder.selectedTemplates.filter((item) => item.id !== selectedTemplateId)
-    )
+    setBuilder({
+      ...builder,
+      selectedTemplates: builder.selectedTemplates.filter(
+        (item) => item.id !== selectedTemplateId
+      ),
+    })
   },
-  [builder.selectedTemplates, setSelectedTemplates]
+  [builder, setBuilder]
 )
+
 
 
   const getSelectedForTemplate = useCallback(

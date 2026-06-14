@@ -224,7 +224,6 @@ export default function StepTemplates() {
                   selectedCount={countSelectedForTemplate(selectedTemplates, template.id)}
                   onOpenSizes={handleOpenTemplate}
                   onOpenSelected={setSelectedManageTemplate}
-                  compact
                 />
               ))}
             </div>

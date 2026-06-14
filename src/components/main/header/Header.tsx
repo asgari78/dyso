@@ -31,7 +31,7 @@ export default function Header({ activeService, setActiveService }: HeaderProps)
         />
       </div>
 
-      <header className="sticky top-0 z-[20] border-b border-slate-100 bg-white/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur-md">
         <div className="mx-auto w-full max-w-7xl px-3 sm:px-4 lg:px-6">
           {/* نکته: این خط دیگر hidden نیست */}
           <div className="h-14 md:h-16 min-w-0 flex items-center gap-2 md:gap-3">

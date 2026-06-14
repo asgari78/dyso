@@ -40,7 +40,7 @@ export default function MobileBottomNav({
   onSelect,
 }: MobileBottomNavProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[9999] flex h-16 items-center justify-around border-t border-slate-200 bg-white/95 px-2 pb-1 pt-2 backdrop-blur-lg md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-slate-200 bg-white/95 px-2 pb-1 pt-2 backdrop-blur-lg md:hidden">
       {NAV_ITEMS.map((item) => {
         const isActive = activeServiceId === item.id;
         const Icon = item.icon;

@@ -163,7 +163,7 @@ export default function Cart() {
       {/* dropdown فقط در دسکتاپ */}
       {!isMobile && (
         <div
-className={`absolute left-0 top-full z-[150] mt-3 w-[min(92vw,400px)] max-w-[calc(100vw-24px)] origin-top-left rounded-2xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-300 ${
+className={`absolute left-0 top-full z-2 mt-3 w-[min(92vw,400px)] max-w-[calc(100vw-24px)] origin-top-left rounded-2xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-300 ${
   isOpen
     ? "visible translate-y-0 opacity-100"
     : "invisible -translate-y-2 opacity-0"

@@ -89,7 +89,7 @@ export default function SearchInput() {
     isOpen && typeof document !== "undefined"
       ? createPortal(
           <div
-            className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           >
             <div

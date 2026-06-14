@@ -184,7 +184,7 @@ if (!user) {
 
       <div
 className={[
-  "absolute left-0 top-full z-[120] mt-3 w-72 max-w-[calc(100vw-24px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-all duration-200",
+  "absolute left-0 top-full z-2 mt-3 w-72 max-w-[calc(100vw-24px)] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_20px_50px_rgba(15,23,42,0.12)] transition-all duration-200",
   openMenu
     ? "visible translate-y-0 opacity-100"
     : "invisible -translate-y-1 opacity-0",

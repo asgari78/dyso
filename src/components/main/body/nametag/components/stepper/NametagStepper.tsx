@@ -69,16 +69,14 @@ export default function NametagStepper() {
   }
 
   return (
-    <div className="sticky md:top-[72] top-[65px] z-[20] w-full bg-gray-50">
-
-
+    <div className="sticky top-[60px] md:top-[65px] z-20 w-full bg-gray-50">
       {/* connector line full width */}
-      <div className="absolute hidden md:flex left-0 right-0 top-7 h-[2px] bg-slate-200" />
+      <div className="absolute hidden md:flex left-0 right-0 top-5 h-0.5 bg-slate-200" />
 
-      <div className="mx-auto max-w-6xl px-4 pt-3">
+      <div className="mx-auto max-w-6xl px-4 pt-2">
 
         {/* Desktop */}
-        <div className="hidden md:block py-1">
+        <div className="hidden md:block">
 
           <div className="relative flex items-center justify-between">
 

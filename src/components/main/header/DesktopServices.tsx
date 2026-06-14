@@ -172,7 +172,7 @@ function TooltipPanel({ item, open, id }: TooltipPanelProps) {
       role="tooltip"
       aria-hidden={!open}
       className={cn(
-        "pointer-events-none absolute top-1/2 right-full z-[120] w-[270px] -translate-y-1/2 rounded-xl border bg-white/95 shadow-xl backdrop-blur-md",
+        "pointer-events-none absolute top-1/2 right-full z-50 w-[270px] -translate-y-1/2 rounded-xl border bg-white/95 shadow-xl backdrop-blur-md",
         "mr-3 max-w-[min(270px,calc(100vw-32px))]",
         "2xl:top-[calc(100%+8px)] 2xl:right-1/2 2xl:mr-0 2xl:translate-x-1/2 2xl:-translate-y-0",
         t.tooltipBorder,
@@ -270,9 +270,9 @@ export default function DesktopServices({
   const ActiveIcon = activeService.icon;
 
   return (
-    <div ref={wrapperRef} dir="rtl" className="relative min-w-0">
+    <div ref={wrapperRef} dir="rtl" className="relative min-w-0 z-50">
       {/* compact mode: md تا قبل از 2xl */}
-      <div className="hidden md:block 2xl:hidden">
+      <div className="hidden md:block 2xl:hidden z-3">
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
@@ -280,7 +280,7 @@ export default function DesktopServices({
           aria-expanded={menuOpen}
           className={cn(
             "flex h-9 items-center gap-1.5 rounded-lg border bg-white px-2.5 text-xs font-semibold transition",
-            "hover:bg-slate-50",
+            "hover:bg-slate-50 z-3",
             menuOpen
               ? "border-slate-300 text-slate-900"
               : "border-slate-200 text-slate-700"
@@ -308,13 +308,13 @@ export default function DesktopServices({
 
         <div
           className={cn(
-            "absolute right-0 top-[calc(100%+8px)] z-[130] w-[min(92vw,340px)] rounded-xl border border-slate-200 bg-white p-2 shadow-[0_16px_38px_rgba(15,23,42,0.12)] transition-all duration-150",
+            "absolute right-0 top-[calc(100%+8px)] z-3 w-[min(92vw,340px)] rounded-xl border border-slate-200 bg-white p-2 shadow-[0_16px_38px_rgba(15,23,42,0.12)] transition-all duration-150",
             menuOpen
               ? "visible translate-y-0 opacity-100"
               : "invisible -translate-y-1.5 opacity-0"
           )}
         >
-          <div className="grid grid-cols-1 gap-1.5">
+          <div className="grid grid-cols-1 gap-1.5 z-3">
             {SERVICES.map((service) => {
               const Icon = service.icon;
               const open = hoveredId === service.id;
@@ -325,7 +325,7 @@ export default function DesktopServices({
               return (
                 <div
                   key={service.id}
-                  className="relative"
+                  className="relative z-3"
                   onMouseEnter={() => setHoveredId(service.id)}
                   onMouseLeave={() => setHoveredId(null)}
                 >
@@ -334,7 +334,7 @@ export default function DesktopServices({
                     onClick={() => handleSelect(service.id)}
                     aria-describedby={open ? tooltipId : undefined}
                     aria-current={isActive ? "true" : undefined}
-                    className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-right transition hover:cursor-pointer hover:bg-slate-50"
+                    className="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 z-3 text-right transition hover:cursor-pointer hover:bg-slate-50"
                   >
                     <div
                       className={cn(

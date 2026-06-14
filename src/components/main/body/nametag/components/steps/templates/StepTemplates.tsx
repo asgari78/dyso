@@ -124,10 +124,6 @@ const { builder, addTemplateToSelection, removeTemplateFromSelection } = useName
     [handleAddSize]
   )
 
-  /**
-   * کلیک روی فوتر انتخاب‌ها در کارت:
-   * مودال مدیریت انتخاب‌های همان قالب باز شود
-   */
   const handleOpenSelected = useCallback((template: Template) => {
     setSelectedManageTemplate(template)
   }, [])

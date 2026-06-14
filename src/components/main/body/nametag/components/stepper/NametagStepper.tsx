@@ -69,7 +69,7 @@ export default function NametagStepper() {
   }
 
   return (
-    <div className="sticky md:top-[72] top-[65px] z-[60] w-full bg-gray-50">
+    <div className="sticky md:top-[72] top-[65px] z-[20] w-full bg-gray-50">
 
 
       {/* connector line full width */}

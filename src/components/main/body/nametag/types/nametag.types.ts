@@ -5,6 +5,23 @@
 export type Mm = number
 
 /* =========================================
+   Template Domain
+========================================= */
+
+export type TemplateId = string
+
+export type TemplateCategory =
+  | "kids"
+  | "sports"
+  | "fantasy"
+  | "minimal"
+  | "modern"
+  | "science"
+  | "nature"
+
+export type TemplateTag = string
+
+/* =========================================
    Template Sizes
 ========================================= */
 
@@ -17,14 +34,13 @@ export type TemplateSizeId =
 
 export interface TemplateSize {
   id: TemplateSizeId
-
   label: string
 
-  /* ابعاد واقعی برچسب */
+  /** ابعاد واقعی برچسب */
   widthMm: Mm
   heightMm: Mm
 
-  /* تصویر پیش نمایش */
+  /** تصویر پیش‌نمایش مخصوص همین سایز */
   previewImage: string
 }
 
@@ -33,17 +49,16 @@ export interface TemplateSize {
 ========================================= */
 
 export interface Template {
-  id: string
-
+  id: TemplateId
   name: string
 
+  /** تصویر کاور اصلی قالب */
   previewImage: string
 
-  category?: string
+  category: TemplateCategory
+  tags: TemplateTag[]
 
-  tags?: string[]
-
-  /* سایزهایی که این قالب دارد */
+  /** سایزهای قابل انتخاب برای این قالب */
   sizes: TemplateSize[]
 }
 
@@ -54,16 +69,11 @@ export interface Template {
 
 export interface SelectedTemplate {
   id: string
-
-  templateId: string
-
+  templateId: TemplateId
   templateName: string
-
   sizeId: TemplateSizeId
-
   widthMm: Mm
   heightMm: Mm
-
   previewImage: string
 }
 
@@ -80,7 +90,6 @@ export interface Student {
   school?: string
   photoUrl?: string
 }
-
 
 /* =========================================
    A4 Sheet
@@ -100,22 +109,13 @@ export const A4_SIZE: SheetSize = {
    Grid System For A4 Layout
 ========================================= */
 
-/*
-این Grid کمک می‌کند
-جای خالی برای Drop شدن برچسب‌ها
-را محاسبه کنیم
-*/
-
 export interface GridCell {
   row: number
   col: number
-
   xMm: Mm
   yMm: Mm
-
   widthMm: Mm
   heightMm: Mm
-
   isOccupied: boolean
 }
 
@@ -125,14 +125,10 @@ export interface GridCell {
 
 export interface DropZone {
   id: string
-
   xMm: Mm
   yMm: Mm
-
   widthMm: Mm
   heightMm: Mm
-
-  /* آیا قابل قرار دادن برچسب هست */
   isAvailable: boolean
 }
 
@@ -143,23 +139,16 @@ export interface DropZone {
 export interface SheetItemPosition {
   xMm: Mm
   yMm: Mm
-
   widthMm: Mm
   heightMm: Mm
 }
 
 export interface SheetItem {
   id: string
-
-  templateId: string
-
+  templateId: TemplateId
   templateSizeId: TemplateSizeId
-
   selectedTemplateId: string
-
-  /* دانش آموزی که روی برچسب چاپ می‌شود */
   studentId?: string
-
   position: SheetItemPosition
 }
 
@@ -169,12 +158,8 @@ export interface SheetItem {
 
 export interface Sheet {
   id: string
-
   name: string
-
   items: SheetItem[]
-
-  /* grid برای نمایش drop zones */
   grid?: GridCell[]
 }
 
@@ -184,8 +169,6 @@ export interface Sheet {
 
 export interface LayoutPreviewState {
   draggingTemplate?: SelectedTemplate
-
-  /* Drop zone هایی که هنگام drag نشان داده می‌شوند */
   availableDropZones: DropZone[]
 }
 
@@ -195,11 +178,8 @@ export interface LayoutPreviewState {
 
 export interface PricingBreakdown {
   sheetCount: number
-
   labelCount: number
-
   pricePerSheet: number
-
   totalPrice: number
 }
 
@@ -209,11 +189,8 @@ export interface PricingBreakdown {
 
 export interface OrderSummary {
   selectedTemplates: SelectedTemplate[]
-
   students: Student[]
-
   sheets: Sheet[]
-
   pricing: PricingBreakdown
 }
 

@@ -30,7 +30,8 @@ const PAGE_SIZE = 12
 type ViewState = "ready" | "empty-dataset" | "no-results"
 
 export default function StepTemplates() {
-const { builder, addTemplateToSelection, setBuilder } = useNametagBuilder()
+const { builder, addTemplateToSelection, removeTemplateFromSelection } = useNametagBuilder()
+
 
 
 
@@ -137,15 +138,11 @@ const { builder, addTemplateToSelection, setBuilder } = useNametagBuilder()
 
 const handleRemoveSelected = useCallback(
   (selectedTemplateId: string) => {
-    setBuilder({
-      ...builder,
-      selectedTemplates: builder.selectedTemplates.filter(
-        (item) => item.id !== selectedTemplateId
-      ),
-    })
+    removeTemplateFromSelection(selectedTemplateId)
   },
-  [builder, setBuilder]
+  [removeTemplateFromSelection]
 )
+
 
 
 

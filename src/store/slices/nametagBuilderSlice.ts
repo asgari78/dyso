@@ -273,7 +273,7 @@ const nametagBuilderSlice = createSlice({
        Reset Builder
     ========================= */
 
-    resetBuilder() {
+    reremoveTemplateFromSelection() {
       return initialState
     },
   },
@@ -310,7 +310,7 @@ export const {
   generateOrderSummary,
   clearOrderSummary,
 
-  resetBuilder,
+  reremoveTemplateFromSelection,
 } = nametagBuilderSlice.actions
 
 export default nametagBuilderSlice.reducer
